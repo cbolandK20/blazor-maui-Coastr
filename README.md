@@ -9,6 +9,13 @@ Its goals are the use of some technical aspects of MAUI and Blazor like:
 - Hardware Sensor Access
 - Use of System Apps (Maps, Camera, etc.)
 - Use of the UI Framework Mudblazor
+  
+It's work in progress ....
+
+## Whats it's all about?
+Its an Beer Coaster App for Windows, Mac, iOS and Andoid.
+I'm testing it an Windows and Android. On Mac / iOS it should work, but I haven't tested ist yet.
+I think it's about 70% done, but who knows ;-)
 
 
 ## Projekt Structure
@@ -31,17 +38,16 @@ At the Moment, EF Migrations aren't well supportet under MAUI. Thatswhy a 'Migra
 ### Create Migration
 `add-migration InitialCreate -StartupProject CoastR.Persistence.Migrator -Project CoastR.Persistence -Context CoastR.Persistence.Impl.CoasterDBContext -Verbose`
 
-### Add Migration
 
 ## 3rd Party Tools / Frameworks
-| MubBlazor | https://www.mudblazor.com/ |
-| Font Awesome | https://fontawesome.com/ |
-| BlazorAnimation | https://github.com/aboudoux/BlazorAnimation |
+MubBlazor - https://www.mudblazor.com/ <br>
+Font Awesome - https://fontawesome.com/ <br>
+BlazorAnimation - https://github.com/aboudoux/BlazorAnimation <br>
 
 ## Links that helped me
+https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/appmodel/maps?view=net-maui-7.0&tabs=windows#using-the-map <br>
+...
 
-
-https://learn.microsoft.com/en-us/dotnet/maui/platform-integration/appmodel/maps?view=net-maui-7.0&tabs=windows#using-the-map
-
+Always remember: it's work in progress.
 
 
