@@ -34,7 +34,9 @@ At the Moment, EF Migrations aren't well supportet under MAUI. Thatswhy a 'Migra
 ### Add Migration
 
 ## 3rd Party Tools / Frameworks
-https://www.mudblazor.com/
+| MubBlazor | https://www.mudblazor.com/
+| Font Awesome | https://fontawesome.com/
+| BlazorAnimation | https://github.com/aboudoux/BlazorAnimation
 
 ## Links that helped me
 
