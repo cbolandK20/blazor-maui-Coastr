@@ -1,0 +1,101 @@
+﻿@inject StateContainer state
+@inject NavigationManager navigation
+@inject IMenuItemService service
+@inject ICoasterItemService coasterItemService
+@inject IApplicationMessageService messageService
+
+@page "/newMenuItem"
+@page "/newMenuItem/{ItemIndex:int}"
+@page "/newCoasterItem/{ReturnUrl}/{ItemIndex:int}"
+
+<div style="height:80%" name="venuecontent">
+    <MenuItemComponent Model="Model" ItemNameChangeEvent="PreselectItem" @ref="_itemComponent" validationMethod="ValidateName"></MenuItemComponent>
+</div>
+<div style="height:18%" name="venuebuttons">
+    <ButtonBarReturnOk OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnClick" />
+</div>
+
+@code {
+    [Parameter]
+    public string ReturnUrl { get; set; } = "/";
+
+    [Parameter]
+    public int? ItemIndex { get; set; } = null;
+
+    public MenuItem Model { get; set; } = null;
+
+    private MenuItemComponent _itemComponent;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Was darfs sein?";
+
+        Model = new MenuItem();
+        Model.Menu = state.CurrentVenue.Menu;
+    }
+
+    private void OnReturnClick()
+    {
+        var target = string.IsNullOrEmpty(ReturnUrl) ? "/" : ReturnUrl;
+        navigation.NavigateTo(target);
+    }
+
+    private async void OnClearClick()
+    {
+        await _itemComponent.Clear();
+    }
+
+    private async void OnOkClick()
+    {
+        await _itemComponent.Form.Validate();
+        if (!_itemComponent.Form.IsValid)
+        {
+            return;
+        }
+
+        Model.Menu = state.CurrentVenue.Menu;
+        state.CurrentVenue?.Menu.Items.Add(Model);
+        Model = service.Save(Model);
+
+        if (state.HasCoaster)
+        {
+            var newItem = new CoasterItem()
+                {
+                    MenuItem = Model,
+                    Count = 1,
+                    Index = ItemIndex.Value,                    
+                };
+
+            coasterItemService.AddToCoaster(newItem, state.CurrentCoaster);                        
+        }
+
+        OnReturnClick();
+    }
+
+    private async Task PreselectItem(string name)
+    {
+        var items = await service.SearchItemsByName(name);
+        if (items.Any())
+        {
+            var itemFound = items.FirstOrDefault();
+            Model.Name = itemFound?.Name;
+            Model.Price = itemFound.Price;
+            StateHasChanged();
+        }
+        else
+        {
+            Model.Name = name;
+        }
+    }
+
+    public String ValidateName(string name)
+    {
+        var items = state.CurrentCoaster?.Items == null ? new List<CoasterItem>() : state.CurrentCoaster?.Items;
+        var itemNames = items.Select(itemNames => itemNames.MenuItem.Name).ToList();
+        var result = itemNames.Contains(name, StringComparer.CurrentCultureIgnoreCase) ? AppMessages.MSG_ITEM_ALREADY_IN_LIST : null;
+        return result;
+    }
+
+}

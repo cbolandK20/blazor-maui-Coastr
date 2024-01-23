@@ -1,0 +1,75 @@
+﻿@inject StateContainer state
+@inject NavigationManager navigation
+@inject IVenueService service
+
+@page "/newVenue"
+@page "/newVenue/{ReturnUrl}"
+
+<div style="height:80%" name="venuecontent">
+    <VenueComponent Model="Model" @ref="venueComponent" ItemNameChangeEvent="PreselectItem"></VenueComponent>
+</div>
+<div style="height:18%" name="venuebuttons">
+    <ButtonBarReturnOk OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnKlick" />
+</div>
+@code {
+    [Parameter]
+    public string ReturnUrl { get; set; } = "/";
+
+    public Venue Model { get; set; } = null;
+
+    private VenueComponent venueComponent;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Wo bist du?";        
+
+        Model = new Venue() { Location = state.CurrentPosition };
+
+    }
+
+    private void OnReturnKlick()
+    {
+        navigation.NavigateTo(ReturnUrl);    
+    }
+
+    private async void OnClearKlick()
+    {
+        await venueComponent.Clear();
+    }
+
+    private async void OnOkClick()
+    {
+        if (!await venueComponent.IsValid())
+        {
+            return;
+        }
+
+        if (state.HasCoaster)
+        {
+            state.CurrentCoaster.Venue = Model;
+        }
+        state.CurrentVenue = service.Save(Model);
+        if (!String.IsNullOrEmpty(ReturnUrl))
+        {
+            navigation.NavigateTo(ReturnUrl.Replace("-","/"));
+        }
+    }
+
+    private async Task PreselectItem(string name)
+    {
+
+        var items = await service.SearchVenueByNameAsync(name);
+        if (items.Any())
+        {
+            Model = items.FirstOrDefault();
+        }
+        else
+        {
+            Model.Name = name;
+        }
+        StateHasChanged();
+    }
+
+}

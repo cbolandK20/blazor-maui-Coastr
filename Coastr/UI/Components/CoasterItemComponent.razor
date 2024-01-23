@@ -1,0 +1,39 @@
+﻿<Animation Effect="@Effect.BounceIn" Speed="@Speed.Fast" Enabled="Animate" OnAnimationEnd="() => Animate = false" Class="full-size" >
+    <!--<MudStack Row="false" Justify="Justify.SpaceBetween" Class="full-size"> -->
+    <br />
+    <MudText Align="Align.Center" Style="font-size: min(4vw, 5vh);">
+        @Model.MenuItem.Name <br />
+    </MudText>
+    <br />
+    <MudText Align="Align.Center" Style="font-size: min(4vw, 5vh);">
+        @Model.Count
+    </MudText>
+    <!-- </MudStack> -->
+</Animation>
+@code {
+    [Parameter]
+    public CoasterItemViewModel Model { get; set; }
+
+    private void OnAnimateionEnd()
+    {
+        Animate = false;
+    }
+
+    private bool _animate = false;
+
+    [Parameter]
+    public bool Animate
+    {
+        get => _animate;
+        set
+        {
+            if (_animate == value) return;
+            _animate = value;
+            AnimateChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<bool> AnimateChanged { get; set; }
+
+}

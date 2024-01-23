@@ -1,0 +1,54 @@
+﻿@implements IDisposable
+
+@inject ISnackbar snackbar
+@inject StateContainer state
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.Messages.OnChange += ShowMessages;
+    }
+
+    public void Dispose()
+    {
+        state.Messages.OnChange -= ShowMessages;
+    }
+
+    private Severity GetSeverity(ApplicationMessageType type)
+    {
+        Severity ret;
+        switch (type)
+        {
+            case ApplicationMessageType.CRITICAL:
+                ret = Severity.Error;
+                break;
+            case ApplicationMessageType.ERROR:
+                ret = Severity.Error;
+                break;
+            case ApplicationMessageType.WARNING:
+                ret = Severity.Warning;
+                break;
+            case ApplicationMessageType.INFO:
+                ret = Severity.Info;
+                break;
+            case ApplicationMessageType.SUCCESS:
+                ret = Severity.Success;
+                break;
+            default:
+                ret = Severity.Normal;
+                break;
+        }
+        return ret;
+    }
+
+    protected void ShowMessages()
+    {
+        var nonValues = state.Messages.Where(item => item.Type != ApplicationMessageType.VALUE);
+        foreach (var item in nonValues)
+        {
+            snackbar.Add(item.Text, GetSeverity(item.Type));            
+        }
+        state.Messages.RemoveRange(nonValues);
+    }
+}

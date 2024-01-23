@@ -1,0 +1,36 @@
+﻿<div class="button-grid-3">
+    <div class="centered-item">
+        <MudIcon Icon="fa-solid fa-circle-arrow-left"
+                 Class="font-size-buttons-bottom"
+                 @onclick="@ReturnButtonAction">
+        </MudIcon>
+    </div>
+    <div class="centered-item">
+        <MudIcon Icon="fa-solid fa-trash-can" aria-label="clear"
+                 Class="font-size-buttons-bottom"
+                 @onclick="@ClearButtonAction">
+        </MudIcon>
+    </div>
+    <div class="centered-item">
+        <MudIcon Icon="fa-solid fa-circle-check" aria-label="ok"
+                 Class="font-size-buttons-bottom"
+                 @onclick="@OkButtonAction">
+        </MudIcon>
+    </div>
+</div>
+
+@code {    
+
+    [Parameter]
+    public Action ReturnButtonAction { get; set; }
+
+    [Parameter]
+    public Action ClearButtonAction { get; set; }
+
+    [Parameter]
+    public Action OkButtonAction { get; set; }
+
+
+
+
+}

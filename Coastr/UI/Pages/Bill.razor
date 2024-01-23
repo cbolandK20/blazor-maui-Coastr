@@ -1,0 +1,85 @@
+﻿@inject StateContainer state
+@inject ICoasterService service
+@inject IApplicationMessageService messageService
+
+@page "/bills"
+
+<div style="height:100%; overflow-y:scroll" name="billscontent">
+    @if (_model.Any())
+    {
+        <MudExpansionPanels MultiExpansion="false" Elevation="5">
+            @foreach (var modelItem in _model)
+            {
+                var sum = modelItem.Items.Sum(it => it.Price);
+                <MudExpansionPanel Text="@modelItem.Venue?.Name">
+                    <TitleContent>
+                        <div class="expansion-panel-header-3-grid">
+                            <MudText>@modelItem.Venue?.Name</MudText>
+                                <MudText>@string.Format("{0:C}", sum)</MudText>
+                                <MudIconButton 
+                                               Variant="@Variant.Filled"
+                                               Color="@Color.Primary"
+                                               OnClick="() => OnPayCoaster(modelItem)"
+                                               Icon="fa-solid fa-money-bill-1-wave"
+                                               Disabled=@(!modelItem.Items.Any()) />                                
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+                                <NoRecordsContent>
+                                    @AppMessages.MSG_NO_DATA
+                            </NoRecordsContent>
+                            <Columns>
+                                <PropertyColumn Property="x => x.MenuItem.Name" Title="Name" />
+                                <PropertyColumn Property="x => x.Count" Title="Menge" />
+                                <PropertyColumn Property="x => x.MenuItem.Price" Title="Preis" Format="C" />
+                                <PropertyColumn Property="x => x.Price" Title="Summe" Format="C" />
+                            </Columns>
+                        </MudDataGrid>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+    }
+</div>
+
+@code {
+    private IList<Coaster> _model { get; set; } = new List<Coaster>();
+
+    AggregateDefinition<CoasterItem> _sumAggregation = new AggregateDefinition<CoasterItem>()
+        {
+            Type = AggregateType.Custom,
+            CustomAggregate = x =>
+            {
+                var sum = x.Sum(it => it.Price);
+                return $"{sum.Value.ToString("C")}";
+            }
+        };
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Rechnung";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await service.GetOpenCoastersAsync();
+        if (!_model.Any())
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_NO_DATA, ApplicationMessageType.INFO));
+        }
+    }
+
+    private async Task OnPayCoaster(Coaster coasterToPay)
+    {
+        if (service.PayCoaster(coasterToPay))
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_COASTER_BILLED, ApplicationMessageType.INFO));
+            _model = await service.GetOpenCoastersAsync();
+            StateHasChanged();
+        }
+
+    }
+}

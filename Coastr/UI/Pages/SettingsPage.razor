@@ -1,0 +1,45 @@
+﻿@inject StateContainer state
+@page "/settings"
+
+<MudExpansionPanels MultiExpansion="true" Elevation="5">
+    <MudExpansionPanel Text="Optik" >
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="Model.UiTheme" Label="Skin" Variant="Variant.Text" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudSwitch @bind-Value="@Model.UiDarkMode" Label="Dunkler Modus" @onclick="OnModeChange"/>
+            </MudItem>
+        </MudGrid>
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Position">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudNumericField @bind-Value="Model.LocationThreshold" Label="Grenzwert / Minimalabstand" Variant="Variant.Text"></MudNumericField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudSwitch @bind-Value="@Model.LocationReCheck" Label="Position periodisch prüfen"  />
+            </MudItem>
+        </MudGrid>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+@code {
+
+    public AppSettings Model { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Einstellungen";
+
+        Model = state.Settings;
+    }
+
+    private void OnModeChange()
+    {
+        state.Settings.UiDarkMode = Model.UiDarkMode;       
+    }
+
+}

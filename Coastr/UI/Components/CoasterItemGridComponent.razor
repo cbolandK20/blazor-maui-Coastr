@@ -1,0 +1,44 @@
+﻿
+<MudDataGrid Items="@Model" Groupable="true">
+    <NoRecordsContent>
+        @AppMessages.MSG_NO_DATA
+    </NoRecordsContent>
+    <Columns>
+        <PropertyColumn Property="it => it.Coaster.Created" Title="Datum" Format="dd.MM.yyyy - HH:mm" GroupBy="@_groupByShortDate" Grouping>
+            <GroupTemplate>
+                <span style="font-weight:bold">@context.Grouping.Key</span>
+            </GroupTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="it => it.Coaster.Venue.Name" Title="Ort">
+            <GroupTemplate>
+                <span style="font-weight:bold">@context.Grouping.Key</span>
+            </GroupTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="it => it.MenuItem.Name" Title="Name">
+            <GroupTemplate>
+                <span style="font-weight:bold">@context.Grouping.Key</span>
+            </GroupTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="it => it.Count" Title="Anzahl" Groupable="false" Sortable="false" />
+        <PropertyColumn Property="it => it.Price" Title="Preis" Groupable="false" Format="c" Sortable="false" AggregateDefinition="_sumAggregation">
+        </PropertyColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    public IList<CoasterItem> Model { get; set; } = new List<CoasterItem>();
+
+    Func<CoasterItem, object> _groupByShortDate = x =>
+       {
+           return x.Coaster.Created.ToString("d");
+       };
+
+    AggregateDefinition<CoasterItem> _sumAggregation = new AggregateDefinition<CoasterItem>
+        {
+            Type = AggregateType.Sum,
+            DisplayFormat = "{value}"
+        };
+
+
+}

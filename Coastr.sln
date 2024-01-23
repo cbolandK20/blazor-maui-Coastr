@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coastr", "Coastr\Coastr.csproj", "{559BD1B6-9091-4575-92CC-F8A8FA9983A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoastR.Model", "CoastR.Model\CoastR.Model.csproj", "{754EFABE-CCA3-4BD5-A90A-9A5973536BFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoastR.Persistence.Migrator", "CoastR.Persistence.Migrator\CoastR.Persistence.Migrator.csproj", "{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoastR.Persistence", "CoastR.Persistence\CoastR.Persistence.csproj", "{8150050C-980C-4940-9868-1EB675B0C7CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{559BD1B6-9091-4575-92CC-F8A8FA9983A5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{754EFABE-CCA3-4BD5-A90A-9A5973536BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754EFABE-CCA3-4BD5-A90A-9A5973536BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754EFABE-CCA3-4BD5-A90A-9A5973536BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754EFABE-CCA3-4BD5-A90A-9A5973536BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8150050C-980C-4940-9868-1EB675B0C7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8150050C-980C-4940-9868-1EB675B0C7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8150050C-980C-4940-9868-1EB675B0C7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8150050C-980C-4940-9868-1EB675B0C7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F353C0FD-F945-4EF5-A672-7C315DBE094C}
+	EndGlobalSection
+EndGlobal

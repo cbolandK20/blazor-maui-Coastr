@@ -1,0 +1,101 @@
+﻿@inject StateContainer state
+@inject IJSRuntime jsRuntime
+@inject IMenuItemService service
+@inject IApplicationMessageService messageService
+
+@page "/editMenuItem/{MenuItemId:int}"
+
+<div style="height:80%" name="venuecontent">
+    <MenuItemComponent Model="_viewModel" ItemNameChangeEvent="PreselectItem" @ref="itemComponent" validationMethod="ValidateName"></MenuItemComponent>
+</div>
+<div style="height:20%" name="venuebuttons">
+    <ButtonBarReturnClearOk ClearButtonAction="OnClearKlick" OkButtonAction="OnOkKlick" ReturnButtonAction="OnReturnKlick" />
+</div>
+@code {
+
+    [Parameter]
+    public int? MenuItemId { get; set; }
+
+    private MenuItem _model { get; set; } = null;
+    private MenuItem _viewModel { get; set; } = new MenuItem();
+
+    private MenuItemComponent itemComponent;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Speisekarte";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await service.GetAsync(MenuItemId.Value);
+        populateModel(_model, _viewModel);
+    }
+
+    private void populateModel(MenuItem source, MenuItem target)
+    {
+        target.Updated = source.Updated;
+        target.Created = source.Created;
+        target.Id = source.Id;
+        target.Menu = source.Menu;
+        target.Name = source.Name;
+        target.Price = source.Price;
+    }
+
+    private async void OnReturnKlick()
+    {
+        //populateModel(_model, _viewModel);
+        await jsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async void OnClearKlick()
+    {
+        _model.State = ObjectState.ARCHIVED;
+        service.Save(_model);
+        OnReturnKlick();
+    }
+
+    private async void OnOkKlick()
+    {
+
+        await itemComponent.Form.Validate();
+        if (!itemComponent.Form.IsValid)
+        {
+            return;
+        }
+        populateModel(_viewModel, _model);
+        _model = service.Save(_model);
+        if (!state.CurrentVenue.Menu.Items.Contains(_model))
+        {
+            state.CurrentVenue.Menu.Items.Add(_model);
+        }
+
+        OnReturnKlick();
+    }
+
+    private async Task PreselectItem(string name)
+    {
+        var item = await service.SearchItemByNameAndVenueAsync(name, _model.Menu.Venue.Id.Value);
+        if (item != null)
+        {            
+            _viewModel.Name = _model.Name;            
+        }
+        else
+        {
+            _viewModel.Name = name;
+        }
+        StateHasChanged();
+    }
+
+    public String ValidateName(string name)
+    {
+        string result = null;
+        var items = _model.Menu.Items == null ? new List<MenuItem>() : _model.Menu.Items;                
+        var item = items.Where(it => it.Name.Equals(name)).FirstOrDefault();
+        result = item != null && item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase) && item.Id != MenuItemId ?  AppMessages.MSG_ITEM_ALREADY_IN_VENUE : null;
+        return result;
+    }
+}

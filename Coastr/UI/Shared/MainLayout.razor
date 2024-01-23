@@ -1,0 +1,58 @@
+﻿@using System.ComponentModel
+
+@inherits LayoutComponentBase
+@implements IDisposable
+
+@inject StateContainer state
+
+<MudThemeProvider @bind-IsDarkMode="@_darkMode" />/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+<ApplicationMessageComponent/>
+
+<MudLayout>
+    <MudAppBar Elevation="5">
+        <AppHeader MenuButtonAction="DrawerToggle"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Elevation="5" Variant="DrawerVariant.Temporary">
+        <MudDrawerHeader Style="align-items: center">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Typo="Typo.h5" Class="mt-1">CoastR</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent Style="height:100%">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = false;
+    private bool _darkMode = false;    
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _darkMode = state.Settings.UiDarkMode;
+        state.Settings.PropertyChanged += OnUiSettingsChanged;
+        state.WindowState.PropertyChanged += OnUiSettingsChanged;
+    }
+
+    public void Dispose()
+    {
+        state.Settings.PropertyChanged -= OnUiSettingsChanged;
+        state.WindowState.PropertyChanged -= OnUiSettingsChanged;
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    public void OnUiSettingsChanged(object sender, PropertyChangedEventArgs e)
+    {        
+        _darkMode = state.Settings.UiDarkMode;
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,19 @@
+﻿@page "/"
+@page "/coaster"
+
+@inject StateContainer state
+@inject ICoasterService service
+
+<CoasterComponent Model="_model"/>
+
+@code {
+
+    private Coaster _model = null;
+
+    protected override void OnInitialized()
+    {
+        var temp = state.HasCoaster ? state.CurrentCoaster : service.CreateCoaster(state.CurrentVenue);
+        _model = state.CurrentCoaster = temp;
+        state.HeaderText = _model.Venue?.Name;
+    }
+}

@@ -1,0 +1,44 @@
+﻿@inject IMenuItemService service;
+
+<MudPaper Elevation="5" Class="paper-paddings">
+    <MudForm @ref="Form" @bind-IsValid="@success" >
+        <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnItemNameChanged" SearchFunc="@SearchItemName"
+                         CoerceValue="true" CoerceText="false" Required="true" Validation="@validationMethod" />
+        <MudNumericField @bind-Value="Model.Price" Label="Preis" Variant="Variant.Text" Format="N2" Min="0" />
+    </MudForm>    
+</MudPaper>
+
+@code {
+    private bool success;
+
+    public MudForm Form { get; private set; }
+
+    [Parameter]
+    public MenuItem Model { get; set; } = new MenuItem();
+
+    [Parameter]
+    public EventCallback<string> ItemNameChangeEvent { get; set; }
+
+    [Parameter]
+    public Func<String, String> validationMethod { get; set; }
+
+    private async Task<IEnumerable<String>> SearchItemName(string value)
+    {        
+        var result = await service.SearchItemsByName(value);
+        var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name).Distinct() : new String[0];
+
+        return ret;
+    }
+
+    public async Task Clear()
+    {
+        await Form.ResetAsync();
+    }
+
+    public async Task OnItemNameChanged(string value)
+    {
+        //Model.Name = value;
+        await ItemNameChangeEvent.InvokeAsync(value);
+    }
+    
+}

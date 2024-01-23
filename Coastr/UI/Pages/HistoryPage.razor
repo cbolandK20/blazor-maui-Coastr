@@ -1,0 +1,150 @@
+﻿@inject StateContainer state;
+@inject ICoasterService service
+@inject IApplicationMessageService messageService
+
+@page "/history"
+
+<div style="height:100%; overflow-y:scroll" name="historycontent">
+    @if (_model.Any())
+    {
+        <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true">
+            <MudTabPanel Text="nach Datum">
+                <MudExpansionPanels MultiExpansion="true" Elevation="5">
+                    @foreach (var Item in _byDate)
+                    {
+                        <MudExpansionPanel>
+                            <TitleContent>
+                                <div class="expansion-panel-header-3-grid">
+                                    <MudText>@Item.Key.ToString("dd.MM.yyyy")</MudText>
+                                    <MudText>@_sumByDate[Item.Key].ToString("C")</MudText>
+                                    <div />                                    
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudExpansionPanels MultiExpansion="false" Elevation="5">
+                                    @foreach (var modelItem in Item.Value)
+                                    {
+                                        var sum = modelItem.Items.Sum(it => it.Price);
+                                        <MudExpansionPanel>
+                                            <TitleContent>
+                                                <div class="expansion-panel-header-2-grid">
+                                                    <MudText>
+                                                        @modelItem.Venue?.Name
+                                                    </MudText>
+                                                    <MudText>@string.Format("{0:C}", sum)</MudText>
+                                                    </div>
+                                                </TitleContent>
+                                                <ChildContent>
+                                                    <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+                                                        <NoRecordsContent>
+                                                            @AppMessages.MSG_NO_DATA
+                                                    </NoRecordsContent>
+                                                    <Columns>
+                                                        <PropertyColumn Property="x => x.MenuItem.Name" Title="Name" />
+                                                        <PropertyColumn Property="x => x.Count" Title="Menge" />
+                                                        <PropertyColumn Property="x => x.MenuItem.Price" Title="Preis" Format="C" />
+                                                        <PropertyColumn Property="x => x.Price" Title="Summe" Format="C" />
+                                                    </Columns>
+                                                </MudDataGrid>
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    }
+                                </MudExpansionPanels>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </MudTabPanel>
+            <MudTabPanel Text="nach Ort">
+                <MudExpansionPanels MultiExpansion="true" Elevation="5">
+                    @foreach (var Item in _byName)
+                    {
+                        <MudExpansionPanel Text="@Item.Key">
+                            <TitleContent>
+                                <div class="expansion-panel-header-3-grid">
+                                    <MudText>@Item.Key</MudText>
+                                        <MudText>@_sumByName[Item.Key].ToString("C")</MudText>
+                                        <div />
+                                    </div>
+                                </TitleContent>
+                            <ChildContent>
+                                <MudExpansionPanels MultiExpansion="false" Elevation="5">
+                                    @foreach (var modelItem in Item.Value)
+                                    {
+                                        var sum = modelItem.Items.Sum(it => it.Price);
+                                        <MudExpansionPanel>
+                                            <TitleContent>
+                                                <div class="expansion-panel-header-2-grid">
+                                                    <MudText>
+                                                        @modelItem.Updated.ToString()
+                                                    </MudText>
+                                                    <MudText>@string.Format("{0:C}", sum)</MudText>
+                                                    </div>
+                                                </TitleContent>
+                                                <ChildContent>
+                                                    <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+                                                        <NoRecordsContent>
+                                                            @AppMessages.MSG_NO_DATA
+                                                    </NoRecordsContent>
+                                                    <Columns>
+                                                        <PropertyColumn Property="x => x.MenuItem.Name" Title="Name" />
+                                                        <PropertyColumn Property="x => x.Count" Title="Menge" />
+                                                        <PropertyColumn Property="x => x.MenuItem.Price" Title="Preis" Format="C" />
+                                                        <PropertyColumn Property="x => x.Price" Title="Summe" Format="C" />
+                                                    </Columns>
+                                                </MudDataGrid>
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    }
+                                </MudExpansionPanels>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </MudTabPanel>
+        </MudTabs>
+    }
+</div>
+
+@code {
+    private List<Coaster> _model { get; set; } = new List<Coaster>();
+    private IDictionary<string, List<Coaster>> _byName = null;
+    private IDictionary<DateTime, List<Coaster>> _byDate = null;
+    private IDictionary<string, Decimal> _sumByName = new Dictionary<string, Decimal>();
+    private IDictionary<DateTime, Decimal> _sumByDate = new Dictionary<DateTime, Decimal>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Historie";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await service.GetListAsync(item => item.State == ObjectState.ARCHIVED);
+        if (!_model.Any())
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_NO_DATA, ApplicationMessageType.INFO));
+            return;
+        }
+
+        _byName = _model.GroupBy(it => it.Venue.Name).ToDictionary(group => group.Key, group => group.ToList());
+        _byDate = _model.GroupBy(it => it.Updated.Date).ToDictionary(group => group.Key, group => group.ToList());
+
+        Calc();
+    }
+
+    private void Calc()
+    {
+        foreach (var item in _byName)
+        {
+            _sumByName.Add(item.Key, item.Value.Sum(it => it.Items.Sum(el => el.Price.Value)));
+        }
+
+        foreach (var item in _byDate)
+        {
+            _sumByDate.Add(item.Key, item.Value.Sum(it => it.Items.Sum(el => el.Price.Value)));
+        }
+    }
+}

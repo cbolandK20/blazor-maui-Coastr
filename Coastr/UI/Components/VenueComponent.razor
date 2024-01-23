@@ -1,0 +1,88 @@
+﻿@inject IVenueService service;
+@inject StateContainer state
+
+<div style="height:80%" name="venuecontent">
+
+    <MudExpansionPanels MultiExpansion="true" Elevation="5">
+        <MudExpansionPanel Text="Basics" IsExpanded="true">
+            <TitleContent>
+                <div class="expansion-panel-header-3-grid">
+                    <MudText>Daten</MudText>        
+                    <div/>
+                    @if(state.Capabilities.UseLocation) {
+                        <MudIconButton Variant="@Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="ShowOnMapClick" />
+                    }
+                    else
+                    {
+                        <div />
+                    }
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudForm @ref="_form">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnVenueNameChanged" SearchFunc="SearchItemName"
+                                             CoerceValue="true" CoerceText="false" Required="true" Disabled="@ReadOnly" />
+                        </MudItem>
+                        @if (Model.Location != null)
+                        {
+                            <MudItem xs="6">
+                                <MudNumericField Value="Model.Location.Latitude" Label="Latitude" Variant="Variant.Text" Disabled="true" />
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudNumericField Value="Model.Location.Longitude" Label="Longitude" Variant="Variant.Text" Disabled="true" />
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudForm>
+            </ChildContent>
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Speisekarte">
+            <MenueComponent Model="Model.Menu" ReadOnly="@ReadOnly" />
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</div>
+
+@code {
+    [Parameter]
+    public Venue Model { get; set; }
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+    [Parameter]
+    public EventCallback<string> ItemNameChangeEvent { get; set; }
+
+    private MudForm _form;
+
+
+    public async Task Clear()
+    {
+        await _form.ResetAsync();
+        //StateHasChanged();
+    }
+
+    public async Task<bool> IsValid()
+    {
+        await _form.Validate();
+        return _form.IsValid;
+    }
+
+    private async Task ShowOnMapClick()
+    {
+        await service.ShowOnMap(Model);
+    }
+
+    private async Task<IEnumerable<String>> SearchItemName(string value)
+    {
+        var result = await service.SearchVenueByNameAsync(value);
+        var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name) : new String[0];
+
+        return ret;
+    }  
+
+    public async Task OnVenueNameChanged(string value)
+    {
+        //Model.Name = value;
+        await ItemNameChangeEvent.InvokeAsync(value);
+    }
+}

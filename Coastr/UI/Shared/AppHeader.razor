@@ -1,0 +1,42 @@
+﻿@using System.ComponentModel
+@implements IDisposable
+@inject StateContainer state;
+<MudGrid Justify="Justify.FlexStart" Style="align-items:center;">
+    <MudItem xs="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@MenuButtonAction" />
+    </MudItem>
+    <MudItem xs="10">
+        <MudText Typo="Typo.h5" Class="mt-1">@state.HeaderText</MudText>
+    </MudItem>
+</MudGrid>
+
+    @code {
+    [Parameter]
+    public Action MenuButtonAction { get; set; }
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.PropertyChanged += OnHeaderTextChanged;
+    }
+
+    public void Dispose()
+    {
+        state.PropertyChanged -= OnHeaderTextChanged;
+    }
+
+    public void OnHeaderTextChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (!nameof(StateContainer.HeaderText).Equals(e?.PropertyName))
+        {
+            return;
+        }
+
+        StateHasChanged();
+    }
+
+
+
+}

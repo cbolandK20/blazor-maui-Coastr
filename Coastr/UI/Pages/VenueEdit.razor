@@ -1,0 +1,88 @@
+﻿@inject StateContainer state
+@inject IJSRuntime jsRuntime
+@inject IVenueService service
+@inject IApplicationMessageService messageService;
+
+@page "/editVenue/{VenueId:int}"
+
+<div style="height:80%; overflow-y:scroll" name="venuecontent">
+    <VenueComponent Model="_viewModel" @ref="venueComponent" ItemNameChangeEvent="PreselectItem" />
+</div>
+<div style="height:18%" name="venuebuttons">
+    <ButtonBarReturnClearOk ClearButtonAction="OnClearClick" OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnClick" />
+</div>
+
+@code {
+    [Parameter]
+    public int? VenueId { get; set; }
+
+    private Venue _viewModel = null;
+    private Venue _model = null;
+
+    private VenueComponent venueComponent;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Ort";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await service.GetAsync(VenueId.Value);
+        _viewModel = new Venue();
+        populateModel(_model, _viewModel);
+    }
+
+    private void populateModel(Venue source, Venue target)
+    {
+        target.Updated = source.Updated;
+        target.Created = source.Created;
+        target.Id = source.Id;
+        target.Location = source.Location;
+        target.Menu = source.Menu;
+        target.Name = source.Name;
+    }
+
+    private async void OnReturnClick()
+    {
+        //populateModel(_model, _viewModel);
+        await jsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async void OnClearClick()
+    {
+        await venueComponent.Clear();
+    }
+
+    private async void OnOkClick()
+    {
+        if (!await venueComponent.IsValid())
+        {
+            return;
+        }
+
+        populateModel(_viewModel, _model);
+        service.Save(_model);
+        OnReturnClick();
+    }
+
+    private async Task PreselectItem(string name)
+    {
+
+        var items = await service.SearchVenueByNameAsync(name);
+        if (items.Any())
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_LOCATION_ALREADY_KNOWN, ApplicationMessageType.INFO));
+            _viewModel.Name = _model.Name;
+        }
+        else
+        {
+            _viewModel.Name = name;
+        }
+        StateHasChanged();
+    }
+
+}

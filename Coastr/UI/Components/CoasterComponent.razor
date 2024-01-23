@@ -1,0 +1,258 @@
+﻿@using System.ComponentModel
+@implements IDisposable
+
+@inject StateContainer state
+@inject ICoasterItemService coasterItemService
+@inject IApplicationMessageService messageService
+
+
+@inject NavigationManager navigation;
+
+<div style="height:100%" name="coastercontent">
+    <MudDropContainer T="CoasterItemViewModel"
+                      Items="_viewModel.Items"
+                      ItemsSelector="@((item,dropzone) => item.Index.ToString().Equals(dropzone))"
+                      ItemDropped="OnDropItem"
+                      Style="height:100%; width:100%; min-width: 0"
+                      CanDropClass="mud-border-success"
+                      NoDropClass="mud-border-error"
+                      ApplyDropClassesOnDragStarted="true">
+        <ChildContent>
+            <!-- coaster -->
+            <div name="coasterItems" style="height:80%;">
+                <div class="coasterGrid">
+                    @for (int i = 0; i < _gridItems; i++)
+                    {
+                        int temp = i;
+                        @if (temp == _gridItems / 2)
+                        {
+                            <MudDropZone T="CoasterItemViewModel"
+                                         Identifier="@temp.ToString()"
+                                         CanDrop="@(item => item.Type == CoasterItemViewModelType.OTHER)">
+                                <ItemRenderer>
+                                    <div class="centered-item">
+                                        <MudIcon Icon="fa-solid fa-circle-plus"
+                                                 Style="font-size: min(28vw, 23vh)"
+                                                 @onclick="OnAddItemClick">
+                                        </MudIcon>
+                                    </div>
+                                </ItemRenderer>
+                            </MudDropZone>
+                        }
+                        else
+                        {
+                            <MudPaper Elevation="5" Style="min-width:0; overflow:hidden; height:96%">
+                                <MudDropZone T="CoasterItemViewModel" Identifier="@temp.ToString()"
+                                             CanDrop="@(item => (item.Type == CoasterItemViewModelType.COMMAND) || item.Type == CoasterItemViewModelType.CONTENT)"
+                                             Style="width:100%; height:100%;">
+                                    <ItemRenderer>
+                                        <CoasterItemComponent Model="@context" @bind-Animate="@_animationTrigger[temp]" />
+                                    </ItemRenderer>
+                                </MudDropZone>
+                            </MudPaper>
+
+                        }
+                    }
+                </div>
+            </div>
+            <!-- Buttons-->
+            <div style="height:20%;" name="coasterbuttons">
+                <div class="button-grid-2">                    
+                    <MudDropZone T="CoasterItemViewModel"
+                                 Identifier="@INDEX_DELETE.ToString()"
+                                 CanDrop="@(item => item.Type == CoasterItemViewModelType.OTHER)">
+                        <ItemRenderer>
+                            <div class="centered-item">
+                                <MudIcon Class="font-size-buttons-bottom"
+                                         Icon="fa-solid fa-trash-can" 
+                                         @onclick="OnDeleteClick" />
+                            </div>
+                        </ItemRenderer>
+                    </MudDropZone>
+                    <MudDropZone T="CoasterItemViewModel"
+                                 Identifier="@INDEX_SUBTRACT.ToString()"
+                                 CanDrop="@(item => item.Type == CoasterItemViewModelType.OTHER)">
+                        <ItemRenderer>
+                            <div class="centered-item">
+                                <MudIcon Icon="fa-solid fa-circle-minus"
+                                         Class="font-size-buttons-bottom" 
+                                         @onclick="OnSubtractClick" />
+                            </div>
+                        </ItemRenderer>
+                    </MudDropZone>
+                </div>
+            </div>
+        </ChildContent>
+    </MudDropContainer>
+</div>
+
+<style>
+    .coasterGrid {
+        width: 100%;
+        height: 100%;
+        display: grid;        
+        grid-row-gap: 5px;
+        grid-column-gap: 10px;
+        grid-template-rows: repeat(@GridRows, 1fr);
+        grid-template-columns: repeat(@GridColumns, 1fr);
+        text-align: center;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        text-overflow: clip;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int GridColumns { get; set; } = 3;
+    [Parameter]
+    public int GridRows { get; set; } = 3;
+
+    private const int INDEX_DELETE = -2;
+    private const int INDEX_SUBTRACT = -3;
+
+    private int _gridItems;
+
+    private CoasterViewModel _viewModel = null;
+    private List<CoasterItemViewModel> _buttons = new List<CoasterItemViewModel>();
+
+    [Parameter]
+    public Coaster Model { get; set; } = null;
+
+    private List<bool> _animationTrigger = new List<bool>();
+
+
+    public void RefreshCoaster(Object sender, PropertyChangedEventArgs e)
+    {
+        if (nameof(StateContainer.CurrentCoaster).Equals(e.PropertyName))
+        {
+            navigation.Refresh(true);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        // events
+        state.PropertyChanged += RefreshCoaster;
+
+
+        _gridItems = GridColumns * GridRows;
+        for (int i = 0; i < _gridItems; i++)
+        {
+            _animationTrigger.Add(false);
+        }
+
+        _viewModel = new CoasterViewModel(Model);
+        if (!_viewModel.Items.Any(item => item.Type == CoasterItemViewModelType.COMMAND))
+        {
+            var AddItem = new CoasterItemViewModel() { Index = (_gridItems / 2), Type = CoasterItemViewModelType.COMMAND };
+            _viewModel.Items.Add(AddItem);
+            var button = new CoasterItemViewModel() { Index = -1, Type = CoasterItemViewModelType.COMMAND };
+            _viewModel.Items.Add(button);
+            button = new CoasterItemViewModel() { Index = INDEX_SUBTRACT, Type = CoasterItemViewModelType.COMMAND };
+            _viewModel.Items.Add(button);
+            button = new CoasterItemViewModel() { Index = INDEX_DELETE, Type = CoasterItemViewModelType.COMMAND };
+            _viewModel.Items.Add(button);
+        }
+    }
+
+    public void Dispose()
+    {
+        state.PropertyChanged -= RefreshCoaster;
+    }
+
+    private void OnDropItem(MudItemDropInfo<CoasterItemViewModel> dropItem)
+    {
+        var itemInZone = _viewModel.Items.FirstOrDefault(item => item.Index.ToString().Equals(dropItem.DropzoneIdentifier));
+        if (dropItem.Item.Type == CoasterItemViewModelType.COMMAND)
+        {
+            if (itemInZone != null)
+            {
+                if (dropItem.Item.Index > 0)
+                {
+                    IncreaseItemCount(itemInZone);
+                }
+                else if (dropItem.Item.Index == INDEX_SUBTRACT)
+                {
+                    DecreaseItemCount(itemInZone);
+                }
+                else if (dropItem.Item.Index == INDEX_DELETE)
+                {
+                    DeleteItem(itemInZone);
+                }
+
+                _animationTrigger[Convert.ToInt32(dropItem.DropzoneIdentifier)] = true;
+            }
+            else
+            {
+                if (dropItem.Item.Index > 0)
+                {
+                    CreateNewItem(dropItem.DropzoneIdentifier);
+                }
+            }
+        }
+    }
+
+    private void IncreaseItemCount(CoasterItemViewModel source)
+    {
+        source.Count++;
+        source.Model.Count = source.Count;
+        coasterItemService.Save(source.Model);
+    }
+
+    private void DecreaseItemCount(CoasterItemViewModel source)
+    {
+        if (source.Count == 1)
+        {
+            DeleteItem(source);
+            return;
+        }
+        source.Count--;
+        source.Model.Count = source.Count;
+        coasterItemService.Save(source.Model);
+    }
+
+    private void DeleteItem(CoasterItemViewModel source)
+    {
+        coasterItemService.DeleteItem(source.Model);
+        _viewModel.Items.Remove(source);
+    }
+
+    public void OnSubtractClick()
+    {
+        state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_HELP_REMOVE_COASTER_ITEM, ApplicationMessageType.INFO));
+    }
+
+    public void OnDeleteClick()
+    {
+        state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_HELP_DELETE_COASTER_ITEM, ApplicationMessageType.INFO));
+    }
+
+    public void OnAddItemClick()
+    {
+        state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_HELP_ADD_COASTER_ITEM, ApplicationMessageType.INFO));
+    }
+
+    private void CreateNewItem(string zoneId)
+    {
+        if (!state.HasVenue)
+        {
+            CreateNewVenueForCoaster(zoneId);
+            return;
+            //SelectMenuItemForCoaster(zoneId);
+        }
+
+        SelectMenuItemForCoaster(zoneId);
+    }
+
+    private void SelectMenuItemForCoaster(string zoneId)
+    {
+        navigation.NavigateTo($"/newCoasterItem/coaster/{zoneId}");
+    }
+
+    private void CreateNewVenueForCoaster(string zoneId)
+    {
+        navigation.NavigateTo($"newVenue/newMenuItem-{zoneId}");
+    }
+}
