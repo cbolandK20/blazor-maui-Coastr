@@ -36,8 +36,12 @@
     {
         base.OnInitialized();
         state.HeaderText = "Orte";
+    }
 
-        _model = service.GetAll();
+    protected async override Task OnInitializedAsync()
+    {        
+        _model = await service.GetAllActiveAsync();
+        await base.OnInitializedAsync();
     }
 
 }

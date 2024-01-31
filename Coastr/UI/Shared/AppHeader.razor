@@ -1,12 +1,17 @@
 ﻿@using System.ComponentModel
 @implements IDisposable
 @inject StateContainer state;
+@inject WindowStateHandler handler;
+
 <MudGrid Justify="Justify.FlexStart" Style="align-items:center;">
     <MudItem xs="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@MenuButtonAction" />
     </MudItem>
-    <MudItem xs="10">
+    <MudItem xs="9">
         <MudText Typo="Typo.h5" Class="mt-1">@state.HeaderText</MudText>
+    </MudItem>
+        <MudItem xs="1" Class="justify-end">
+            <MudIconButton Icon="fa-solid fa-rotate" OnClick="Reload"/>
     </MudItem>
 </MudGrid>
 
@@ -33,10 +38,12 @@
         {
             return;
         }
-
         StateHasChanged();
     }
 
-
+    protected async void Reload()
+    {
+        await handler.InitState();
+    }
 
 }

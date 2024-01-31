@@ -16,12 +16,11 @@
                         <div class="expansion-panel-header-3-grid">
                             <MudText>@modelItem.Venue?.Name</MudText>
                                 <MudText>@string.Format("{0:C}", sum)</MudText>
-                                <MudIconButton 
-                                               Variant="@Variant.Filled"
+                                <MudIconButton Variant="@Variant.Filled"
                                                Color="@Color.Primary"
                                                OnClick="() => OnPayCoaster(modelItem)"
                                                Icon="fa-solid fa-money-bill-1-wave"
-                                               Disabled=@(!modelItem.Items.Any()) />                                
+                                               Disabled=@(!modelItem.Items.Any()) />
                             </div>
                         </TitleContent>
                         <ChildContent>
@@ -74,12 +73,16 @@
 
     private async Task OnPayCoaster(Coaster coasterToPay)
     {
-        if (service.PayCoaster(coasterToPay))
+        if (!service.PayCoaster(coasterToPay))
         {
-            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_COASTER_BILLED, ApplicationMessageType.INFO));
-            _model = await service.GetOpenCoastersAsync();
-            StateHasChanged();
+            return;
         }
-
+        state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_COASTER_BILLED, ApplicationMessageType.INFO));
+        _model = await service.GetOpenCoastersAsync();
+        if (coasterToPay.Id == state.CurrentCoaster.Id)
+        {
+            state.CurrentCoaster = null;
+        }
+        StateHasChanged();
     }
 }

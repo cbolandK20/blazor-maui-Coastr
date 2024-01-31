@@ -158,5 +158,14 @@ namespace Coastr {
                 return ResourceManager.GetString("MSG_POSITION_DISABLED", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Standort Neubestimmung... ähnelt.
+        /// </summary>
+        internal static string MSG_REFRESHING {
+            get {
+                return ResourceManager.GetString("MSG_REFRESHING", resourceCulture);
+            }
+        }
     }
 }

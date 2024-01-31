@@ -69,5 +69,21 @@ namespace Coastr.Services.Impl
             }
             return _repo.GetListAsync(item => item.Name.Contains(query));
         }
+
+        public void DeleteVenue(Venue venue)
+        {
+            if (venue == null)
+            {
+                return;
+            }
+
+            venue.State = ObjectState.ARCHIVED;
+            venue.Menu.State = ObjectState.ARCHIVED;    
+            foreach (var item in venue.Menu.Items)
+            {
+                item.State = ObjectState.ARCHIVED;
+            }
+            Save(venue);
+        }
     }
 }

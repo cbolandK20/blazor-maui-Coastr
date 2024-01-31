@@ -71,11 +71,18 @@ namespace Coastr.Services
 
         public async Task InitState()
         {
+            _state.Messages.Add(_messageService.CreateMessage(ApplicationMessageCode.MSG_REFRESHING, ApplicationMessageType.INFO));
+            
             var position = await _locationService.GetCurrentLocationAsync();
-
+            _state.Capabilities.UseLocation = position != null
+                ;
             if (position != null)
             {
                 var venue = await _venueService.GetCurrentVenueAsync(position, _state.Settings.LocationThreshold);
+                if (_state.CurrentVenue != venue)
+                {
+                    _state.CurrentVenue = venue;
+                }
                 var coaster = await _coasterService.GetCurrentCoasterByVenueAsync(venue);
                 _state.CurrentPosition = position;
 
@@ -83,15 +90,9 @@ namespace Coastr.Services
                 {
                     _state.CurrentCoaster = coaster;
                 }
-                if (venue != null)
-                {
-                    _state.CurrentVenue = venue;
-                }
-                _state.Capabilities.UseLocation = true;
             }
             else
             {
-                _state.Capabilities.UseLocation = false;
                 if (DateTime.Now - _state.CurrentCoaster?.Updated > new TimeSpan(_state.Settings.TimeThreshold, 0, 0))
                 {
                     _state.CurrentCoaster = null;

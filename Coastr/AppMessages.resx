@@ -150,4 +150,7 @@
   <data name="MSG_POSITION_DISABLED" xml:space="preserve">
     <value>Die Position konnte nicht ermittelt werden. Bitte prüfen sie die Einstellungen.</value>
   </data>
+  <data name="MSG_REFRESHING" xml:space="preserve">
+    <value>Standort Neubestimmung...</value>
+  </data>
 </root>

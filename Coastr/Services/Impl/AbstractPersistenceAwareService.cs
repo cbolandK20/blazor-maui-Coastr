@@ -19,6 +19,12 @@ namespace Coastr.Services.Impl
         {
             return _repo.GetAllAsync().GetAwaiter().GetResult();
         }
+
+        public Task<List<TModel>> GetAllActiveAsync()
+        {
+            return _repo.GetListAsync(it => ObjectState.MOVING == it.State);
+        }
+
         public Task<List<TModel>> GetAllAsync()
         {
             return _repo.GetAllAsync();

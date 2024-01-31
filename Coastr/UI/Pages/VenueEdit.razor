@@ -52,9 +52,10 @@
         await jsRuntime.InvokeVoidAsync("history.back");
     }
 
-    private async void OnClearClick()
-    {
-        await venueComponent.Clear();
+    private void OnClearClick()
+    {        
+        service.DeleteVenue(_model);
+        OnReturnClick();
     }
 
     private async void OnOkClick()

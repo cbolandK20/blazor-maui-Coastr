@@ -7,6 +7,8 @@ namespace Coastr.Services
     {
         public Venue CreateVenue(GeoPosition location);
 
+        public void DeleteVenue(Venue venue);
+
         public Task<List<Venue>> GetVenuesByPositionAsync(GeoPosition position);
 
         public Task<Venue> GetCurrentVenueAsync(GeoPosition position, int locationThreshold);
