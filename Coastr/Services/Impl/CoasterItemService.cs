@@ -23,6 +23,18 @@ namespace Coastr.Services.Impl
             return ret;
         }
 
+        public CoasterItem AddToCoaster(Model.MenuItem source, int index, Coaster parent)
+        {
+            var newItem = new CoasterItem()
+            {
+                MenuItem = source,
+                Count = 1,
+                Index = index,
+            };
+
+            return AddToCoaster(newItem, parent);
+        }
+
         public void DeleteItem(CoasterItem source)
         {
             source.Coaster.Items.Remove(source);

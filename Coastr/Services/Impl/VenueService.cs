@@ -33,7 +33,7 @@ namespace Coastr.Services.Impl
         public async Task<Venue> GetCurrentVenueAsync(GeoPosition position, int locationThreshold)
         {
             Venue ret = null;
-            var current = await _repo.GetAllAsync();
+            var current = await _repo.GetListAsync(item => item.State == ObjectState.MOVING);
             if (!current.Any())
             {
                 return ret;
@@ -59,6 +59,12 @@ namespace Coastr.Services.Impl
             {
                 _state.Messages.Add(_messageService.CreateMessage(ApplicationMessageCode.MSG_NO_MAPS_APP_FOUND, ApplicationMessageType.WARNING));
             }
+        }
+
+        public async Task ShowOnMap(int sourceId)
+        {
+            var item = await _repo.GetAsync(sourceId);
+            await ShowOnMap(item);
         }
 
         public  Task<List<Venue>> SearchVenueByNameAsync(string query)

@@ -43,6 +43,7 @@
         target.Menu = source.Menu;
         target.Name = source.Name;
         target.Price = source.Price;
+        target.State = source.State;
     }
 
     private async void OnReturnKlick()
@@ -51,11 +52,19 @@
         await jsRuntime.InvokeVoidAsync("history.back");
     }
 
-    private async void OnClearKlick()
+    private void OnClearKlick()
     {
-        _model.State = ObjectState.ARCHIVED;
-        service.Save(_model);
+        _viewModel.State = ObjectState.ARCHIVED;
+        populateAndSave();
+
         OnReturnKlick();
+    }
+
+    private void populateAndSave()
+    {
+        populateModel(_viewModel, _model);
+        _model = service.Save(_model);
+        populateModel(_model, _viewModel);
     }
 
     private async void OnOkKlick()
@@ -66,8 +75,8 @@
         {
             return;
         }
-        populateModel(_viewModel, _model);
-        _model = service.Save(_model);
+        populateAndSave();
+        
         if (!state.CurrentVenue.Menu.Items.Contains(_model))
         {
             state.CurrentVenue.Menu.Items.Add(_model);

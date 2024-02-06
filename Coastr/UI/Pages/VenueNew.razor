@@ -64,6 +64,8 @@
         if (items.Any())
         {
             Model = items.FirstOrDefault();
+            // falls das ding mal geloescht war
+            Model.State = ObjectState.MOVING;
         }
         else
         {

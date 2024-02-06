@@ -49,11 +49,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+      <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
         <PackageReference Include="BlazorAnimation" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
         <PackageReference Include="Microsoft.JSInterop" Version="8.0.1" />
-        <PackageReference Include="MudBlazor" Version="6.12.0" />
+        <PackageReference Include="MudBlazor" Version="6.15.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -79,6 +79,14 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>AppMessages.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
     </ItemGroup>
 
 </Project>

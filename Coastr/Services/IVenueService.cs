@@ -15,6 +15,8 @@ namespace Coastr.Services
 
         public Task ShowOnMap(Venue source);
 
+        public Task ShowOnMap(int sourceId);
+
         public Task<List<Venue>> SearchVenueByNameAsync(string query);
     }
 }

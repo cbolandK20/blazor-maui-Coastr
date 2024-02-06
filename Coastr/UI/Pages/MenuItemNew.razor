@@ -26,6 +26,8 @@
 
     private MenuItemComponent _itemComponent;
 
+    private bool _itemWasSelected = false;
+
 
     protected override void OnInitialized()
     {
@@ -55,20 +57,16 @@
             return;
         }
 
-        Model.Menu = state.CurrentVenue.Menu;
-        state.CurrentVenue?.Menu.Items.Add(Model);
+        if (!state.CurrentVenue.Menu.Items.Contains(Model))
+        {
+            Model.Menu = state.CurrentVenue.Menu;
+            state.CurrentVenue?.Menu.Items.Add(Model);
+        }
         Model = service.Save(Model);
 
         if (state.HasCoaster)
-        {
-            var newItem = new CoasterItem()
-                {
-                    MenuItem = Model,
-                    Count = 1,
-                    Index = ItemIndex.Value,                    
-                };
-
-            coasterItemService.AddToCoaster(newItem, state.CurrentCoaster);                        
+        {            
+            coasterItemService.AddToCoaster(Model, ItemIndex.Value, state.CurrentCoaster);
         }
 
         OnReturnClick();
@@ -79,9 +77,22 @@
         var items = await service.SearchItemsByName(name);
         if (items.Any())
         {
-            var itemFound = items.FirstOrDefault();
-            Model.Name = itemFound?.Name;
-            Model.Price = itemFound.Price;
+            var itemFound = items.FirstOrDefault(it => it.Menu.Venue.Id == Model.Menu.Venue.Id);
+            if (itemFound != null)
+            {
+                // this item already exists for the current venue
+                Model = itemFound;
+                // just in case
+                Model.State = ObjectState.MOVING;
+
+            }
+            else
+            {
+                itemFound = items.FirstOrDefault();
+                Model.Name = itemFound?.Name;
+                Model.Price = itemFound.Price;
+            }
+
             StateHasChanged();
         }
         else

@@ -9,14 +9,15 @@
             <MudExpansionPanel>
                 <TitleContent>
                     @{
+                        var itemId = modelItem.Id;
                         var linkTarget = $"/editVenue/{modelItem.Id}";
                     }
                     <div class="expansion-panel-header-3-grid">
                         <MudText>
                             @modelItem.Name
-                        </MudText>   
-                        <div/>
-                        <MudIconButton Size="@Size.Medium" Variant="@Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-pen" Href="@linkTarget" />
+                        </MudText>
+                        <MudIconButton Variant="Variant.Outlined" Color="@Color.Primary" Icon="fa-solid fa-pen" Href="@linkTarget" />
+                        <MudIconButton Variant="Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="@(() => ShowOnMapClick(itemId))" />
                     </div>
                 </TitleContent>
                 <ChildContent>
@@ -42,6 +43,11 @@
     {        
         _model = await service.GetAllActiveAsync();
         await base.OnInitializedAsync();
+    }
+
+    private async Task ShowOnMapClick(int? id)
+    {
+        await service.ShowOnMap(id.Value);
     }
 
 }
