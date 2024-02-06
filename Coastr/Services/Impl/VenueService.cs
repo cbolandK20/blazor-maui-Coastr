@@ -1,18 +1,16 @@
-﻿using Coastr.Data.Common.Impl;
-using Coastr.Model;
+﻿using Coastr.Model;
 using Coastr.Persistence;
-using Coastr.Services.Common;
 using CoastR.Model;
 
 namespace Coastr.Services.Impl
 {
     public class VenueService : AbstractPersistenceAwareService<IVenueRepository, Venue>, IVenueService
-    {        
-        private IApplicationMessageService _messageService;
+    {                
+        private readonly ILocationService _locationService;
 
-        public VenueService(IVenueRepository repo, IApplicationMessageService messageService) : base (repo)
-        {     
-            _messageService = messageService;   
+        public VenueService(IVenueRepository repo, ILocationService locationService) : base (repo)
+        {                 
+            _locationService = locationService;
         }
         public Venue CreateVenue(GeoPosition location)
         {
@@ -45,10 +43,7 @@ namespace Coastr.Services.Impl
 
         public async Task<bool> ShowOnMap(Venue source)
         {
-            var location = new Location(source.Location.Latitude, source.Location.Longitude);
-            var options = new MapLaunchOptions { Name = source.Name };
-            
-                return await Map.Default.TryOpenAsync(location, options);            
+            return await _locationService.ShowOnMap(source.Location, source.Name);
         }
 
         public async Task<bool> ShowOnMap(int sourceId)

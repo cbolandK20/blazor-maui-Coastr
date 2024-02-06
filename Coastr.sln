@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoastR.Model", "CoastR.Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoastR.Persistence.Migrator", "CoastR.Persistence.Migrator\CoastR.Persistence.Migrator.csproj", "{E120FE10-E27B-44FB-B9F9-EB4F064BAD26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoastR.Persistence", "CoastR.Persistence\CoastR.Persistence.csproj", "{8150050C-980C-4940-9868-1EB675B0C7CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoastR.Persistence", "CoastR.Persistence\CoastR.Persistence.csproj", "{8150050C-980C-4940-9868-1EB675B0C7CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
