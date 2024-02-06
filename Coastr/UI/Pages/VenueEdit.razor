@@ -37,7 +37,7 @@
         {
             _model.Location = state.CurrentPosition;
         }
-        
+
         _viewModel = new Venue();
         populateModel(_model, _viewModel);
     }
@@ -59,7 +59,11 @@
     }
 
     private void OnClearClick()
-    {        
+    {
+        if (state.CurrentVenue?.Id == _model.Id)
+        {
+            state.CurrentVenue = null;
+        }
         service.DeleteVenue(_model);
         OnReturnClick();
     }

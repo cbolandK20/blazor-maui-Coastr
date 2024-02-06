@@ -8,10 +8,7 @@ namespace Coastr.Data
 
         public IList<CoasterItemViewModel> Items { get; set; } = new List<CoasterItemViewModel>();
 
-        public ObjectState State { get; set; } = ObjectState.MOVING;
-
         public Coaster Model { get; private set; }
-
 
         public CoasterViewModel()
         {
@@ -24,8 +21,7 @@ namespace Coastr.Data
             {
                 return;
             }
-            Venue = source.Venue;
-            State = source.State;
+            Venue = source.Venue;            
             Model = source;
 
             foreach (var item in source.Items)

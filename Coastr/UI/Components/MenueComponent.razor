@@ -1,6 +1,6 @@
 ﻿@inject NavigationManager navigation;
 
-<MudDataGrid Items="@_viewModel" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+<MudDataGrid Items="@Model.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
     <NoRecordsContent>
         @AppMessages.MSG_NO_DATA
     </NoRecordsContent>
@@ -30,13 +30,5 @@
 
     [Parameter]
     public string ReturnUrl { get; set; } = "/";
-
-    private IList<MenuItem> _viewModel = new List<MenuItem>();
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        _viewModel = Model.Items.Where(it => it.State == ObjectState.MOVING).ToList();
-    }
 
 }

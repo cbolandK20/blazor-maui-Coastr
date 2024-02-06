@@ -3,6 +3,7 @@ using System;
 using Coastr.Persistence.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoastR.Persistence.Migrations
 {
     [DbContext(typeof(CoasterDBContext))]
-    partial class CoasterDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240206144310_BillItem_update")]
+    partial class BillItem_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

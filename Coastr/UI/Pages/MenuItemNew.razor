@@ -26,9 +26,6 @@
 
     private MenuItemComponent _itemComponent;
 
-    private bool _itemWasSelected = false;
-
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -82,9 +79,6 @@
             {
                 // this item already exists for the current venue
                 Model = itemFound;
-                // just in case
-                Model.State = ObjectState.MOVING;
-
             }
             else
             {

@@ -13,7 +13,6 @@ namespace Coastr.Persistence.Impl
         public Task<Coaster?> GetLatest()
         {
             return _dbSet
-                .Where(it => it.State == ObjectState.MOVING)
                 .OrderByDescending(p => p.Updated)
                 .FirstOrDefaultAsync();
         }

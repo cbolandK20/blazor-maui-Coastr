@@ -1,13 +1,11 @@
-﻿using Coastr.Persistence;
+﻿using Coastr.Model;
+using Coastr.Persistence;
 
 namespace Coastr.Services.Impl
 {
     public class MenuItemService : AbstractPersistenceAwareService<IMenuItemRepository, Coastr.Model.MenuItem>, IMenuItemService
     {
-        public MenuItemService(IMenuItemRepository repo)
-        {
-            _repo = repo;
-        }
+        public MenuItemService(IMenuItemRepository repo) : base(repo) { }        
 
         public Task<List<Coastr.Model.MenuItem>> SearchItemsByName(string query)
         {
@@ -24,5 +22,10 @@ namespace Coastr.Services.Impl
             return ret.FirstOrDefault();
         }
 
+        public async Task<int> Delete (Model.MenuItem item)
+        {
+            _repo.Delete(item);
+            return await _repo.SaveAllAsync();
+        }
     }
 }

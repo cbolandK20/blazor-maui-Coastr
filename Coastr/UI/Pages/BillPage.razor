@@ -1,5 +1,6 @@
 ﻿@inject StateContainer state
 @inject ICoasterService service
+@inject IBillingService billingService
 @inject IApplicationMessageService messageService
 
 @page "/bills"
@@ -72,7 +73,7 @@
     }
 
     private async Task OnPayCoaster(Coaster coasterToPay)
-    {
+    {        
         if (!service.PayCoaster(coasterToPay))
         {
             return;

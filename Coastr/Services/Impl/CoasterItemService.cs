@@ -6,11 +6,7 @@ namespace Coastr.Services.Impl
     public class CoasterItemService : AbstractPersistenceAwareService<ICoasterItemRepository, CoasterItem>, ICoasterItemService
     {
 
-        public CoasterItemService(ICoasterItemRepository repo)
-        {
-            _repo = repo;
-        }
-
+        public CoasterItemService(ICoasterItemRepository repo) : base(repo) { }
 
         public CoasterItem AddToCoaster(CoasterItem source, Coaster parent)
         {
@@ -39,6 +35,12 @@ namespace Coastr.Services.Impl
         {
             source.Coaster.Items.Remove(source);
             _repo.Delete(source);
+            _repo.SaveAll();
+        }
+
+        public void DeleteFromCoaster(Model.MenuItem source)
+        {
+            _repo.Delete(it => it.MenuItem.Id == source.Id);
             _repo.SaveAll();
         }
     }

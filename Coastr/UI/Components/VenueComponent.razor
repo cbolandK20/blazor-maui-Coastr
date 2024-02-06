@@ -1,5 +1,6 @@
 ﻿@inject IVenueService service;
 @inject StateContainer state
+@inject IApplicationMessageService messageService
 
 <div style="height:80%" name="venuecontent">
 
@@ -69,7 +70,10 @@
 
     private async Task ShowOnMapClick()
     {
-        await service.ShowOnMap(Model);
+        if (!await service.ShowOnMap(Model))
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_NO_MAPS_APP_FOUND, ApplicationMessageType.WARNING));
+        }
     }
 
     private async Task<IEnumerable<String>> SearchItemName(string value)

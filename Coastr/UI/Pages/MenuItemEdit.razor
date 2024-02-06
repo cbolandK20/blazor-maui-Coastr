@@ -1,6 +1,7 @@
 ﻿@inject StateContainer state
 @inject IJSRuntime jsRuntime
 @inject IMenuItemService service
+@inject ICoasterItemService coasterItemService;
 @inject IApplicationMessageService messageService
 
 @page "/editMenuItem/{MenuItemId:int}"
@@ -9,7 +10,7 @@
     <MenuItemComponent Model="_viewModel" ItemNameChangeEvent="PreselectItem" @ref="itemComponent" validationMethod="ValidateName"></MenuItemComponent>
 </div>
 <div style="height:20%" name="venuebuttons">
-    <ButtonBarReturnClearOk ClearButtonAction="OnClearKlick" OkButtonAction="OnOkKlick" ReturnButtonAction="OnReturnKlick" />
+    <ButtonBarReturnClearOk ClearButtonAction="OnDeleteKlick" OkButtonAction="OnOkKlick" ReturnButtonAction="OnReturnKlick" />
 </div>
 @code {
 
@@ -42,8 +43,7 @@
         target.Id = source.Id;
         target.Menu = source.Menu;
         target.Name = source.Name;
-        target.Price = source.Price;
-        target.State = source.State;
+        target.Price = source.Price;        
     }
 
     private async void OnReturnKlick()
@@ -52,11 +52,10 @@
         await jsRuntime.InvokeVoidAsync("history.back");
     }
 
-    private void OnClearKlick()
+    private void OnDeleteKlick()
     {
-        _viewModel.State = ObjectState.ARCHIVED;
-        populateAndSave();
-
+        coasterItemService.DeleteFromCoaster(_model);
+        service.Delete(_model);
         OnReturnKlick();
     }
 

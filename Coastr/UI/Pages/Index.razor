@@ -12,6 +12,10 @@
 
     protected override void OnInitialized()
     {
+        // if the current venue was deleted - the coaster is deletet too, but thats nor represented in the state
+        if (state.HasCoaster && !state.HasVenue) {
+            state.CurrentCoaster = null;
+        }
         var temp = state.HasCoaster ? state.CurrentCoaster : service.CreateCoaster(state.CurrentVenue);
         _model = state.CurrentCoaster = temp;
         state.HeaderText = _model.Venue?.Name;

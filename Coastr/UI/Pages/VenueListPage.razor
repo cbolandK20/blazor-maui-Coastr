@@ -41,7 +41,7 @@
 
     protected async override Task OnInitializedAsync()
     {        
-        _model = await service.GetAllActiveAsync();
+        _model = await service.GetAllAsync();
         await base.OnInitializedAsync();
     }
 

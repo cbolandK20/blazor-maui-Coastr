@@ -6,14 +6,16 @@ namespace Coastr.Services.Impl
 {
     public class CoasterService : AbstractPersistenceAwareService<ICoasterRepository, Coaster>, ICoasterService
     {
+        private IBillingService _billingService;
 
-        public CoasterService(ICoasterRepository repo)
+        public CoasterService(ICoasterRepository repo, IBillingService billingService) : base(repo)
         {
-            _repo = repo;
+            _billingService = billingService;
         }
+
         public Coaster CreateCoaster(Venue venue)
         {
-            var ret = new Coaster() { Venue = venue, State = ObjectState.MOVING };
+            var ret = new Coaster() { Venue = venue };
             //ret = _repo.Add(ret);
 
             return ret;
@@ -27,7 +29,7 @@ namespace Coastr.Services.Impl
                 return ret;
             }
 
-            var current = await _repo.GetListAsync(item => item.State == ObjectState.MOVING);
+            var current = await _repo.GetAllAsync();
             if (!current.Any())
             {
                 return ret;
@@ -49,7 +51,7 @@ namespace Coastr.Services.Impl
                 return ret;
             }
 
-            var current = await _repo.GetListAsync(item => item.State == ObjectState.MOVING && item.Venue.Id == source.Id);
+            var current = await _repo.GetListAsync(item => item.Venue.Id == source.Id);
             if (!current.Any())
             {
                 return ret;
@@ -59,12 +61,13 @@ namespace Coastr.Services.Impl
 
         public Task<List<Coaster>> GetOpenCoastersAsync()
         {
-            return _repo.GetListAsync(item => item.State == ObjectState.MOVING);
+            return _repo.GetAllAsync();
         }
 
         public Task<List<Coaster>> GetBilledCoastersAsync()
         {
-            return _repo.GetListAsync(item => item.State != ObjectState.MOVING);
+            // todo
+            return null; // _repo.GetListAsync(item => item.State != ObjectState.MOVING);
         }
 
         public bool PayCoaster(Coaster source)
@@ -74,7 +77,10 @@ namespace Coastr.Services.Impl
                 return false;
             }
 
-            source.State = ObjectState.ARCHIVED;
+            var bill = _billingService.CreateBill(source);
+            _billingService.Save(bill);
+
+            _repo.Delete(source);
             return _repo.SaveAll() > 0;
         }
 

@@ -63,9 +63,7 @@
         var items = await service.SearchVenueByNameAsync(name);
         if (items.Any())
         {
-            Model = items.FirstOrDefault();
-            // falls das ding mal geloescht war
-            Model.State = ObjectState.MOVING;
+            Model = items.FirstOrDefault();            
         }
         else
         {

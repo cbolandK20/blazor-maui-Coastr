@@ -10,5 +10,7 @@ namespace Coastr.Services
         public CoasterItem AddToCoaster(Model.MenuItem source, int index, Coaster CoasterId);
 
         public void DeleteItem(CoasterItem source);
+
+        public void DeleteFromCoaster(Model.MenuItem source);
     }
 }
