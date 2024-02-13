@@ -61,6 +61,15 @@ namespace Coastr.Services.Impl
             return _repo.GetListAsync(item => item.Name.Contains(query));
         }
 
+        public Task<List<Venue>> SearchVenueByNameExactAsync(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return _repo.GetAllAsync();
+            }
+            return _repo.GetListAsync(item => item.Name.Equals(query));
+        }
+
         public void DeleteVenue(Venue venue)
         {
             if (venue == null)

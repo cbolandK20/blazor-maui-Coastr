@@ -13,7 +13,7 @@ namespace Coastr.Services.Impl
             {
                 return _repo.GetAllAsync();
             }
-            return _repo.GetListAsync(item => item.Name.Equals(query));
+            return _repo.GetListAsync(item => query.Contains(item.Name));
         }
 
         public async Task<Coastr.Model.MenuItem> SearchItemByNameAndVenueAsync(string name, int venueId)

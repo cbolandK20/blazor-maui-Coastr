@@ -4,8 +4,9 @@ using System.Runtime.CompilerServices;
 namespace Coastr.Data.Common.Impl
 {
     public class ApplicationMessageList : List<ApplicationMessage>, INotifyPropertyChanged
-    {
+    {        
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

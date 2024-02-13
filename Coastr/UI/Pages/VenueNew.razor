@@ -60,7 +60,7 @@
     private async Task PreselectItem(string name)
     {
 
-        var items = await service.SearchVenueByNameAsync(name);
+        var items = await service.SearchVenueByNameExactAsync(name);
         if (items.Any())
         {
             Model = items.FirstOrDefault();            

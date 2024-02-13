@@ -16,7 +16,7 @@
         <ApplicationTitle>Coastr</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>de.K20.coastr</ApplicationId>
+        <ApplicationId>de.dK20.coastr</ApplicationId>
         <ApplicationIdGuid>CCE2211E-1AC9-4096-8E72-F607F2C43335</ApplicationIdGuid>
 
         <!-- Versions -->
@@ -52,7 +52,7 @@
       <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
         <PackageReference Include="BlazorAnimation" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-        <PackageReference Include="Microsoft.JSInterop" Version="8.0.1" />
+        <PackageReference Include="Microsoft.JSInterop" Version="8.0.2" />
         <PackageReference Include="MudBlazor" Version="6.15.0" />
     </ItemGroup>
 
