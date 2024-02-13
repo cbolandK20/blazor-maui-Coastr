@@ -15,29 +15,34 @@
                     {
                         <MudExpansionPanel>
                             <TitleContent>
-                                <div class="expansion-panel-header-3-grid">
-                                    <MudText>@Item.Key.ToString("dd.MM.yyyy")</MudText>
-                                    <MudText>@Item.Value.Sum(it => it.Sum).ToString("C")</MudText>
-                                    <div />                                    
+                                <div class="expansion-panel-header-2-grid">
+                                    <MudText>
+                                        @Item.Key.ToString("dd.MM.yyyy")
+                                    </MudText>
+                                    <MudText>
+                                        @Item.Value.Sum(it => it.Sum).ToString("C")
+                                    </MudText>
                                 </div>
                             </TitleContent>
                             <ChildContent>
                                 <MudExpansionPanels MultiExpansion="false" Elevation="5">
                                     @foreach (var modelItem in Item.Value)
-                                    {                                        
+                                    {
                                         <MudExpansionPanel>
                                             <TitleContent>
                                                 <div class="expansion-panel-header-2-grid">
                                                     <MudText>
                                                         @modelItem.VenueName
                                                     </MudText>
-                                                    <MudText>@string.Format("{0:C}", modelItem.Sum)</MudText>
-                                                    </div>
-                                                </TitleContent>
-                                                <ChildContent>
-                                                    <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
-                                                        <NoRecordsContent>
-                                                            @AppMessages.MSG_NO_DATA
+                                                    <MudText>
+                                                        @string.Format("{0:C}", modelItem.Sum)
+                                                    </MudText>
+                                                </div>
+                                            </TitleContent>
+                                            <ChildContent>
+                                                <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+                                                    <NoRecordsContent>
+                                                        @AppMessages.MSG_NO_DATA
                                                     </NoRecordsContent>
                                                     <Columns>
                                                         <PropertyColumn Property="x => x.Name" Title="Name" />
@@ -61,12 +66,15 @@
                     {
                         <MudExpansionPanel Text="@Item.Key">
                             <TitleContent>
-                                <div class="expansion-panel-header-3-grid">
-                                    <MudText>@Item.Key</MudText>
-                                        <MudText>@Item.Value.Sum(it => it.Sum).ToString("C")</MudText>
-                                        <div />
-                                    </div>
-                                </TitleContent>
+                                <div class="expansion-panel-header-2-grid">
+                                    <MudText>
+                                        @Item.Key
+                                    </MudText>
+                                    <MudText>
+                                        @Item.Value.Sum(it => it.Sum).ToString("C")
+                                    </MudText>
+                                </div>
+                            </TitleContent>
                             <ChildContent>
                                 <MudExpansionPanels MultiExpansion="false" Elevation="5">
                                     @foreach (var modelItem in Item.Value)
@@ -78,13 +86,15 @@
                                                     <MudText>
                                                         @modelItem.Updated.ToString()
                                                     </MudText>
-                                                    <MudText>@string.Format("{0:C}", sum)</MudText>
-                                                    </div>
-                                                </TitleContent>
-                                                <ChildContent>
-                                                    <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
-                                                        <NoRecordsContent>
-                                                            @AppMessages.MSG_NO_DATA
+                                                    <MudText>
+                                                        @string.Format("{0:C}", sum)
+                                                    </MudText>
+                                                </div>
+                                            </TitleContent>
+                                            <ChildContent>
+                                                <MudDataGrid Items="@modelItem.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%">
+                                                    <NoRecordsContent>
+                                                        @AppMessages.MSG_NO_DATA
                                                     </NoRecordsContent>
                                                     <Columns>
                                                         <PropertyColumn Property="x => x.Name" Title="Name" />
@@ -109,7 +119,7 @@
 @code {
     private List<Bill> _model { get; set; } = new List<Bill>();
     private IDictionary<string, List<Bill>> _byName = null;
-    private IDictionary<DateTime, List<Bill>> _byDate = null;    
+    private IDictionary<DateTime, List<Bill>> _byDate = null;
 
     protected override void OnInitialized()
     {

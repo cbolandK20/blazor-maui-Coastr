@@ -1,4 +1,5 @@
-﻿@implements IDisposable
+﻿@using System.ComponentModel
+@implements IDisposable
 
 @inject ISnackbar snackbar
 @inject StateContainer state
@@ -7,12 +8,12 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        state.Messages.OnChange += ShowMessages;
+        state.Messages.PropertyChanged += ShowMessages;
     }
 
     public void Dispose()
     {
-        state.Messages.OnChange -= ShowMessages;
+        state.Messages.PropertyChanged -= ShowMessages;
     }
 
     private Severity GetSeverity(ApplicationMessageType type)
@@ -42,7 +43,7 @@
         return ret;
     }
 
-    protected void ShowMessages()
+    protected void ShowMessages(object sender, PropertyChangedEventArgs e)
     {
         var nonValues = state.Messages.Where(item => item.Type != ApplicationMessageType.VALUE);
         foreach (var item in nonValues)
