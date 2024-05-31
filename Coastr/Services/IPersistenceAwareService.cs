@@ -10,7 +10,7 @@ namespace Coastr.Services
         IList<TModel> GetAll();
 
         Task<List<TModel>> GetAllAsync();
-
+                
         IList<TModel> GetList(Expression<Func<TModel, bool>> predicate);
 
         Task<List<TModel>> GetListAsync(Expression<Func<TModel, bool>> predicate);

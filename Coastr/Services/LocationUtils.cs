@@ -6,7 +6,7 @@ namespace Coastr.Services
     {
         public static GeoPosition ToPosition(Location source)
         {
-            return new GeoPosition() { Latitude = source.Latitude, Longitude = source.Longitude, Altitude = source.Altitude };
+            return new GeoPosition() { Latitude = source.Latitude, Longitude = source.Longitude, Altitude = source.Altitude.Value };
         }
 
         public static bool IsNear(GeoPosition source, GeoPosition target, int threshold)
@@ -15,8 +15,8 @@ namespace Coastr.Services
             {
                 return false;
             }
-            var sourceLoc = new Location(source.Latitude, source.Longitude, source.Altitude.Value);
-            var targetLoc = new Location(target.Latitude, target.Longitude, target.Altitude.Value);
+            var sourceLoc = new Location(source.Latitude, source.Longitude, source.Altitude);
+            var targetLoc = new Location(target.Latitude, target.Longitude, target.Altitude);
             return sourceLoc.CalculateDistance(targetLoc, DistanceUnits.Kilometers) <= (threshold / 1000d);
         }
     }

@@ -26,6 +26,9 @@
 
     private MenuItemComponent _itemComponent;
 
+    private List<MenuItem> _allItems;
+
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -33,6 +36,12 @@
 
         Model = new MenuItem();
         Model.Menu = state.CurrentVenue.Menu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _allItems = await service.GetAllDistinctAsync();
     }
 
     private void OnReturnClick()
@@ -71,28 +80,17 @@
 
     private async Task PreselectItem(string name)
     {
-        var items = await service.SearchItemsByName(name);
-        if (items.Any())
+        var item = _allItems.FirstOrDefault(item => item.Name.Contains(name));
+        if (item != null)
         {
-            var itemFound = items.FirstOrDefault(it => it.Menu.Venue.Id == Model.Menu.Venue.Id);
-            if (itemFound != null)
-            {
-                // this item already exists for the current venue
-                Model = itemFound;
-            }
-            else
-            {
-                itemFound = items.FirstOrDefault();
-                Model.Name = itemFound?.Name;
-                Model.Price = itemFound.Price;
-            }
-
-            StateHasChanged();
+            Model.Name = item.Name;
+            Model.Price = item.Price;
         }
         else
         {
             Model.Name = name;
         }
+        StateHasChanged();
     }
 
     public String ValidateName(string name)

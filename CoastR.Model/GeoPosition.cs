@@ -8,7 +8,7 @@ namespace CoastR.Model
 {
     public class GeoPosition
     {
-        public double? Altitude { get; set; }        
+        public double Altitude { get; set; } = 0;
         public double Longitude { get; set; }        
         public double Latitude { get; set; }
     }

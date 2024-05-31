@@ -19,6 +19,7 @@
 
     private VenueComponent venueComponent;
 
+    public List<Venue> _allVenues;
 
     protected override void OnInitialized()
     {
@@ -27,6 +28,12 @@
 
         Model = new Venue() { Location = state.CurrentPosition };
 
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _allVenues = await service.GetAllAsync();
+        await base.OnInitializedAsync();
     }
 
     private void OnReturnKlick()
@@ -60,10 +67,10 @@
     private async Task PreselectItem(string name)
     {
 
-        var items = await service.SearchVenueByNameExactAsync(name);
-        if (items.Any())
+        var item = _allVenues.FirstOrDefault(item => item.Name.Contains(name));        
+        if (item != null)
         {
-            Model = items.FirstOrDefault();            
+            Model = item;
         }
         else
         {
