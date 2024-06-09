@@ -17,7 +17,7 @@
                             @modelItem.Name
                         </MudText>
                         <MudIconButton Variant="Variant.Outlined" Color="@Color.Primary" Icon="fa-solid fa-pen" Href="@linkTarget" />
-                        <MudIconButton Variant="Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="@(() => ShowOnMapClick(itemId))" />
+                        <MudIconButton Disabled="modelItem.Location == null" Variant="Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="@(() => ShowOnMapClick(itemId))" />
                     </div>
                 </TitleContent>
                 <ChildContent>

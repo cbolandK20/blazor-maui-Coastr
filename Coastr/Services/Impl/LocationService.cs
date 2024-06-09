@@ -62,6 +62,10 @@ namespace Coastr.Services
 
         public async Task<bool> ShowOnMap(GeoPosition source, string name)
         {
+            if (source == null)
+            {
+                return false;
+            }
             var location = new Location(source.Latitude, source.Longitude);
             var options = new MapLaunchOptions { Name = name };
 

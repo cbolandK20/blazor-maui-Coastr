@@ -32,11 +32,6 @@
     {
         await base.OnInitializedAsync();
         _model = await service.GetAsync(VenueId.Value);
-        // position aktualisieren wenn möglich
-        if (state.CurrentPosition != null)
-        {
-            _model.Location = state.CurrentPosition;
-        }
 
         _viewModel = new Venue();
         populateModel(_model, _viewModel);
@@ -47,9 +42,19 @@
         target.Updated = source.Updated;
         target.Created = source.Created;
         target.Id = source.Id;
-        target.Location = source.Location;
         target.Menu = source.Menu;
         target.Name = source.Name;
+
+        if (source.Location == null)
+        {
+            return;
+        }
+       
+        target.Location = target.Location == null ? new CoastR.Model.GeoPosition() : target.Location;
+        target.Location.Longitude = source.Location.Longitude;
+        target.Location.Altitude = source.Location.Altitude;
+        target.Location.Latitude = source.Location.Latitude;
+        
     }
 
     private async void OnReturnClick()

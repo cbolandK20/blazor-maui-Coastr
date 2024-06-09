@@ -3,15 +3,15 @@
 @inject IApplicationMessageService messageService
 
 <div style="height:80%" name="venuecontent">
-
     <MudExpansionPanels MultiExpansion="true" Elevation="5">
         <MudExpansionPanel Text="Basics" IsExpanded="true">
             <TitleContent>
                 <div class="expansion-panel-header-3-grid">
-                    <MudText>Daten</MudText>        
-                    <div/>
-                    @if(state.Capabilities.UseLocation) {
-                        <MudIconButton Variant="@Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="ShowOnMapClick" />
+                    <MudText>Daten</MudText>
+                    <div />
+                    @if (state.Capabilities.UseLocation)
+                    {
+                        <MudIconButton Disabled="Model.Location==null" Variant="@Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-map" OnClick="ShowOnMapClick" />
                     }
                     else
                     {
@@ -21,18 +21,21 @@
             </TitleContent>
             <ChildContent>
                 <MudForm @ref="_form">
-                    <MudGrid>
+                    <MudGrid Style="align-items:center;">
                         <MudItem xs="12">
                             <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnVenueNameChanged" SearchFunc="SearchItemName"
                                              CoerceValue="true" CoerceText="false" Required="true" Disabled="@ReadOnly" />
                         </MudItem>
-                        @if (Model.Location != null)
+                        @if (state.Capabilities.UseLocation)
                         {
-                            <MudItem xs="6">
+                            <MudItem xs="5">
                                 <MudNumericField Value="Model.Location.Latitude" Label="Latitude" Variant="Variant.Text" Disabled="true" />
                             </MudItem>
-                            <MudItem xs="6">
+                            <MudItem xs="5">
                                 <MudNumericField Value="Model.Location.Longitude" Label="Longitude" Variant="Variant.Text" Disabled="true" />
+                            </MudItem>
+                            <MudItem xs="2">
+                                <MudIconButton Variant="@Variant.Filled" Color="@Color.Primary" Icon="fa-solid fa-arrows-rotate" OnClick="UpdateCoordinatesClick" Style="width:100%" />
                             </MudItem>
                         }
                     </MudGrid>
@@ -55,6 +58,14 @@
 
     private MudForm _form;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Model.Location == null)
+        {
+            Model.Location = new CoastR.Model.GeoPosition();
+        }
+    }
 
     public async Task Clear()
     {
@@ -76,13 +87,23 @@
         }
     }
 
+    private void UpdateCoordinatesClick()
+    {
+        if (state.HasPosition)
+        {
+            Model.Location.Altitude = state.CurrentPosition.Altitude;
+            Model.Location.Longitude = state.CurrentPosition.Longitude;
+            Model.Location.Latitude = state.CurrentPosition.Latitude;
+        }
+    }
+
     private async Task<IEnumerable<String>> SearchItemName(string value)
     {
         var result = await service.SearchVenueByNameAsync(value);
         var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name) : new String[0];
 
         return ret;
-    }  
+    }
 
     public async Task OnVenueNameChanged(string value)
     {
