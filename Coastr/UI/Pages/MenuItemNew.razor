@@ -63,15 +63,20 @@
             return;
         }
 
-        if (!state.CurrentVenue.Menu.Items.Contains(Model))
+        if (state.CurrentVenue.Menu.Items.Any(it => it.Name.Equals(Model.Name)))
+        {
+            Model = state.CurrentVenue.Menu.Items.FirstOrDefault(it => it.Name.Equals(Model.Name));
+        }
+        else
         {
             Model.Menu = state.CurrentVenue.Menu;
             state.CurrentVenue?.Menu.Items.Add(Model);
+            Model = service.Save(Model);
         }
-        Model = service.Save(Model);
+
 
         if (state.HasCoaster)
-        {            
+        {
             coasterItemService.AddToCoaster(Model, ItemIndex.Value, state.CurrentCoaster);
         }
 

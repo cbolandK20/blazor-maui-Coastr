@@ -112,7 +112,7 @@
     display: grid;
     grid-gap: 10px;
     grid-template-rows: 1fr;
-    grid-template-columns: 65% 15% 15%;  
+    grid-template-columns: 58% 20% 15%;  
     align-items:center;
 }
 
