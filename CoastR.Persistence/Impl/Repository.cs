@@ -79,5 +79,11 @@ namespace Coastr.Persistence.Impl
         {
             _dbSet.Remove(source);
         }
+
+        public void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            var toDelete = GetList(predicate).ToArray();
+            _dbSet.RemoveRange(toDelete);
+        }
     }
 }

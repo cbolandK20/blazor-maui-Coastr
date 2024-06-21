@@ -1,9 +1,16 @@
-﻿namespace Coastr.Data.Common.Impl
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace Coastr.Data.Common.Impl
 {
-    public class ApplicationMessageList : List<ApplicationMessage>
-    {
-        public event Action OnChange;
-        private void NotifyMessagesChanged() => OnChange?.Invoke();
+    public class ApplicationMessageList : List<ApplicationMessage>, INotifyPropertyChanged
+    {        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public bool hasErrors()
         {
@@ -13,7 +20,7 @@
         public new void Add(ApplicationMessage message)
         {
             base.Add(message);
-            NotifyMessagesChanged();
+            OnPropertyChanged();
         }
 
         public void RemoveRange(IEnumerable<ApplicationMessage> source)

@@ -3,6 +3,7 @@ using System;
 using Coastr.Persistence.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoastR.Persistence.Migrations
 {
     [DbContext(typeof(CoasterDBContext))]
-    partial class CoasterDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240206121234_Rework_Billing")]
+    partial class Rework_Billing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,9 +68,6 @@ namespace CoastR.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Sum")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Updated")

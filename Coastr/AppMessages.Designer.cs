@@ -79,7 +79,7 @@ namespace Coastr {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Um ein Element komplett vom Deckel zu entfernen ziehen sie einfach das Symbol das Feld ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Um ein Element komplett vom Deckel zu entfernen ziehen sie einfach das Symbol auf das Feld ähnelt.
         /// </summary>
         internal static string MSG_HELP_DELETE_COASTER_ITEM {
             get {
@@ -88,7 +88,7 @@ namespace Coastr {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Um die Anzahl bestehender Elemente zu reduzieren ziehen sie einfach das - Symbol das Feld ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Um die Anzahl bestehender Elemente zu reduzieren ziehen sie einfach das - Symbol auf das Feld ähnelt.
         /// </summary>
         internal static string MSG_HELP_REMOVE_COASTER_ITEM {
             get {

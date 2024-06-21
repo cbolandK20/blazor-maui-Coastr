@@ -10,6 +10,11 @@ namespace Coastr.Services.Impl
 
         protected TRepository _repo;
 
+        public AbstractPersistenceAwareService(TRepository repo)
+        {
+            _repo = repo;
+        }
+
         public Task<TModel> GetAsync(int Id)
         {
             return _repo.GetAsync(Id);
@@ -18,11 +23,6 @@ namespace Coastr.Services.Impl
         public IList<TModel> GetAll()
         {
             return _repo.GetAllAsync().GetAwaiter().GetResult();
-        }
-
-        public Task<List<TModel>> GetAllActiveAsync()
-        {
-            return _repo.GetListAsync(it => ObjectState.MOVING == it.State);
         }
 
         public Task<List<TModel>> GetAllAsync()

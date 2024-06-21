@@ -70,6 +70,8 @@ namespace Coastr
             services.AddScoped<IVenueRepository, VenueRepository>();
             services.AddScoped<IMenuItemRepository, MenuItemRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IBillItemRepository, BillItemRepository>();
+            services.AddScoped<IBillRepository, BillRepository>();
 
             // State + Singletons
             services.AddSingleton<StateContainer>();
@@ -87,6 +89,7 @@ namespace Coastr
             services.AddSingleton<IMenuItemService, MenuItemService>();
             services.AddSingleton<IMenuService, MenuService>();
             services.AddSingleton<IApplicationMessageService, ApplicationMessageService>();
+            services.AddSingleton<IBillingService, BillingService>();
         }
     }
 }

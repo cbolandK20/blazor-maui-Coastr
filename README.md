@@ -1,4 +1,4 @@
-# Coastr
+# CoastR
 
 This is a sample and play Projekt for a MAUI Blazor App.
 Its goals are the use of some technical aspects of MAUI and Blazor like:
@@ -10,7 +10,7 @@ Its goals are the use of some technical aspects of MAUI and Blazor like:
 - Use of System Apps (Maps, Camera, etc.)
 - Use of the UI Framework Mudblazor
   
-It's work in progress ....
+It's work in progress .... BUT I does what it should do.
 
 ## Whats it's all about?
 Its an Beer Coaster App for Windows, Mac, iOS and Andoid.
@@ -18,7 +18,7 @@ I'm testing it an Windows and Android. On Mac / iOS it should work, but I haven'
 I think it's about 70% done, but who knows ;-)
 
 
-## Projekt Structure
+## Project Structure
 
 | Project | Description |
 | ----------- | ----------- |
@@ -29,7 +29,8 @@ I think it's about 70% done, but who knows ;-)
 
 ### Why is the structure like this?
 
-At the Moment, EF Migrations aren't well supportet under MAUI. Thatswhy a 'Migrator' Projekt is needed and well... the rest is a result of this.
+At the Moment, EF Migrations aren't well supportet under MAUI. Thatswhy a 'Migrator' Projekt is needed. <br/>
+Normally I work on large Applications, with modularity as one design principle and I prefer that design. Thatswhy the other projecte exist - It's in my DNA ;-) 
 
 
 

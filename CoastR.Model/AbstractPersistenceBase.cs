@@ -15,8 +15,5 @@ namespace Coastr.Model
 
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Updated { get; set; } = DateTime.Now;
-
-        public ObjectState State { get; set; } = ObjectState.MOVING;
-
     }
 }

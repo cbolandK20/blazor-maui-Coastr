@@ -1,21 +1,16 @@
-﻿using Coastr.Data.Common.Impl;
-using Coastr.Model;
+﻿using Coastr.Model;
 using Coastr.Persistence;
-using Coastr.Services.Common;
 using CoastR.Model;
 
 namespace Coastr.Services.Impl
 {
     public class VenueService : AbstractPersistenceAwareService<IVenueRepository, Venue>, IVenueService
-    {
-        private StateContainer _state;
-        private IApplicationMessageService _messageService;
+    {                
+        private readonly ILocationService _locationService;
 
-        public VenueService(StateContainer state, IVenueRepository repo, IApplicationMessageService messageService)
-        {
-            _state = state;
-            _repo = repo;
-            _messageService = messageService;   
+        public VenueService(IVenueRepository repo, ILocationService locationService) : base (repo)
+        {                 
+            _locationService = locationService;
         }
         public Venue CreateVenue(GeoPosition location)
         {
@@ -25,9 +20,9 @@ namespace Coastr.Services.Impl
             return ret;
         }
 
-        public Task<List<Venue>> GetVenuesByPositionAsync(GeoPosition position)
+        public Task<List<Venue>> GetVenuesByPositionAsync(GeoPosition position, int threshold)
         {
-            return _repo.GetListAsync(item => LocationUtils.IsNear(item.Location, position, _state.Settings.LocationThreshold));
+            return _repo.GetListAsync(item => LocationUtils.IsNear(item.Location, position, threshold));
         }
 
         public async Task<Venue> GetCurrentVenueAsync(GeoPosition position, int locationThreshold)
@@ -46,19 +41,15 @@ namespace Coastr.Services.Impl
             return current.FirstOrDefault();
         }
 
-        public async Task ShowOnMap(Venue source)
+        public async Task<bool> ShowOnMap(Venue source)
         {
-            var location = new Location(source.Location.Latitude, source.Location.Longitude);
-            var options = new MapLaunchOptions { Name = source.Name };
+            return await _locationService.ShowOnMap(source.Location, source.Name);
+        }
 
-            try
-            {
-                await Map.Default.OpenAsync(location, options);
-            }
-            catch (Exception )
-            {
-                _state.Messages.Add(_messageService.CreateMessage(ApplicationMessageCode.MSG_NO_MAPS_APP_FOUND, ApplicationMessageType.WARNING));
-            }
+        public async Task<bool> ShowOnMap(int sourceId)
+        {
+            var item = await _repo.GetAsync(sourceId);
+            return await ShowOnMap(item);
         }
 
         public  Task<List<Venue>> SearchVenueByNameAsync(string query)
@@ -70,6 +61,15 @@ namespace Coastr.Services.Impl
             return _repo.GetListAsync(item => item.Name.Contains(query));
         }
 
+        public Task<List<Venue>> SearchVenueByNameExactAsync(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return _repo.GetAllAsync();
+            }
+            return _repo.GetListAsync(item => item.Name.Equals(query));
+        }
+
         public void DeleteVenue(Venue venue)
         {
             if (venue == null)
@@ -77,13 +77,8 @@ namespace Coastr.Services.Impl
                 return;
             }
 
-            venue.State = ObjectState.ARCHIVED;
-            venue.Menu.State = ObjectState.ARCHIVED;    
-            foreach (var item in venue.Menu.Items)
-            {
-                item.State = ObjectState.ARCHIVED;
-            }
-            Save(venue);
+            _repo.Delete(venue);
+            _repo.SaveAll();            
         }
     }
 }

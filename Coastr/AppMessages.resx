@@ -124,10 +124,10 @@
     <value>Um ein neuer Element hinzufügen ziehen sie einfach das + Symbol auf ein freies Feld</value>
   </data>
   <data name="MSG_HELP_DELETE_COASTER_ITEM" xml:space="preserve">
-    <value>Um ein Element komplett vom Deckel zu entfernen ziehen sie einfach das Symbol das Feld</value>
+    <value>Um ein Element komplett vom Deckel zu entfernen ziehen sie einfach das Symbol auf das Feld</value>
   </data>
   <data name="MSG_HELP_REMOVE_COASTER_ITEM" xml:space="preserve">
-    <value>Um die Anzahl bestehender Elemente zu reduzieren ziehen sie einfach das - Symbol das Feld</value>
+    <value>Um die Anzahl bestehender Elemente zu reduzieren ziehen sie einfach das - Symbol auf das Feld</value>
   </data>
   <data name="MSG_ITEM_ALREADY_IN_LIST" xml:space="preserve">
     <value>Das ist bereits auf deinem Deckel.</value>

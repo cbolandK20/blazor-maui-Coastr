@@ -15,6 +15,9 @@ namespace Coastr.Persistence
         public void Update(IEnumerable<TEntity> source);
 
         public void Delete(TEntity source);
+
+        public void Delete(Expression<Func<TEntity, bool>> predicate);
+        
         public Task<TEntity?> GetAsync(int id);
 
         public IList<TEntity> GetAll();

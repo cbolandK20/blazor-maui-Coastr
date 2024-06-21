@@ -1,4 +1,5 @@
-﻿using CoastR.Model;
+﻿using Coastr.Model;
+using CoastR.Model;
 
 namespace Coastr.Services
 {
@@ -57,6 +58,18 @@ namespace Coastr.Services
             {
                 _cancelTokenSource.Cancel();
             }
+        }
+
+        public async Task<bool> ShowOnMap(GeoPosition source, string name)
+        {
+            if (source == null)
+            {
+                return false;
+            }
+            var location = new Location(source.Latitude, source.Longitude);
+            var options = new MapLaunchOptions { Name = name };
+
+            return await Map.Default.TryOpenAsync(location, options);
         }
     }
 }

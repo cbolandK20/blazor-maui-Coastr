@@ -26,6 +26,8 @@
 
     private MenuItemComponent _itemComponent;
 
+    private List<MenuItem> _allItems;
+
 
     protected override void OnInitialized()
     {
@@ -34,6 +36,12 @@
 
         Model = new MenuItem();
         Model.Menu = state.CurrentVenue.Menu;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _allItems = await service.GetAllDistinctAsync();
     }
 
     private void OnReturnClick()
@@ -55,20 +63,16 @@
             return;
         }
 
-        Model.Menu = state.CurrentVenue.Menu;
-        state.CurrentVenue?.Menu.Items.Add(Model);
+        if (!state.CurrentVenue.Menu.Items.Contains(Model))
+        {
+            Model.Menu = state.CurrentVenue.Menu;
+            state.CurrentVenue?.Menu.Items.Add(Model);
+        }
         Model = service.Save(Model);
 
         if (state.HasCoaster)
-        {
-            var newItem = new CoasterItem()
-                {
-                    MenuItem = Model,
-                    Count = 1,
-                    Index = ItemIndex.Value,                    
-                };
-
-            coasterItemService.AddToCoaster(newItem, state.CurrentCoaster);                        
+        {            
+            coasterItemService.AddToCoaster(Model, ItemIndex.Value, state.CurrentCoaster);
         }
 
         OnReturnClick();
@@ -76,18 +80,17 @@
 
     private async Task PreselectItem(string name)
     {
-        var items = await service.SearchItemsByName(name);
-        if (items.Any())
+        var item = _allItems.FirstOrDefault(item => item.Name.Contains(name));
+        if (item != null)
         {
-            var itemFound = items.FirstOrDefault();
-            Model.Name = itemFound?.Name;
-            Model.Price = itemFound.Price;
-            StateHasChanged();
+            Model.Name = item.Name;
+            Model.Price = item.Price;
         }
         else
         {
             Model.Name = name;
         }
+        StateHasChanged();
     }
 
     public String ValidateName(string name)

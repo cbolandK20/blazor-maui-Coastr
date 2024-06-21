@@ -3,6 +3,7 @@ using System;
 using Coastr.Persistence.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoastR.Persistence.Migrations
 {
     [DbContext(typeof(CoasterDBContext))]
-    partial class CoasterDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240206105122_Integrity_fixes")]
+    partial class Integrity_fixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,65 +23,6 @@ namespace CoastR.Persistence.Migrations
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true);
-
-            modelBuilder.Entity("CoastR.Model.Bill", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Sum")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VenueName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BILLS", (string)null);
-                });
-
-            modelBuilder.Entity("CoastR.Model.BillItem", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BillId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Sum")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BillId");
-
-                    b.ToTable("BILL_ITEMS", (string)null);
-                });
 
             modelBuilder.Entity("Coastr.Model.Coaster", b =>
                 {
@@ -201,41 +145,6 @@ namespace CoastR.Persistence.Migrations
                     b.ToTable("VENUES", (string)null);
                 });
 
-            modelBuilder.Entity("CoastR.Model.Bill", b =>
-                {
-                    b.OwnsOne("CoastR.Model.GeoPosition", "VenueLocation", b1 =>
-                        {
-                            b1.Property<int>("BillId")
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<double?>("Altitude")
-                                .HasColumnType("REAL");
-
-                            b1.Property<double>("Latitude")
-                                .HasColumnType("REAL");
-
-                            b1.Property<double>("Longitude")
-                                .HasColumnType("REAL");
-
-                            b1.HasKey("BillId");
-
-                            b1.ToTable("BILLS");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BillId");
-                        });
-
-                    b.Navigation("VenueLocation");
-                });
-
-            modelBuilder.Entity("CoastR.Model.BillItem", b =>
-                {
-                    b.HasOne("CoastR.Model.Bill", null)
-                        .WithMany("Items")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Coastr.Model.Coaster", b =>
                 {
                     b.HasOne("Coastr.Model.Venue", "Venue")
@@ -309,11 +218,6 @@ namespace CoastR.Persistence.Migrations
                         });
 
                     b.Navigation("Location");
-                });
-
-            modelBuilder.Entity("CoastR.Model.Bill", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Coastr.Model.Coaster", b =>
