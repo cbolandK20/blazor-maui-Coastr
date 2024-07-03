@@ -4,16 +4,9 @@ using Microsoft.JSInterop;
 
 namespace Coastr.Services.Impl
 {
-    public class DomUtilities : IDomUtilities, IDisposable
+    public class DomUtilities(IJSRuntime jsRuntime) : IDomUtilities, IDisposable
     {
-        private readonly IJSRuntime _jsRuntime;
-
-
-        public DomUtilities(IJSRuntime jsRuntime)
-        {
-            _jsRuntime = jsRuntime;
-        }
-
+        private readonly IJSRuntime _jsRuntime = jsRuntime;
 
         public void Dispose() { }
 

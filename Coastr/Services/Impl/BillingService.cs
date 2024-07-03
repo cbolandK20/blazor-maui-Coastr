@@ -4,22 +4,18 @@ using CoastR.Model;
 
 namespace Coastr.Services.Impl
 {
-    public class BillingService : AbstractPersistenceAwareService<IBillRepository, Bill>, IBillingService
+    public class BillingService(IBillRepository repo) : AbstractPersistenceAwareService<IBillRepository, Bill>(repo), IBillingService
     {
-
-        public BillingService(IBillRepository repo) : base(repo)
-        {
-        }
         public Bill CreateBill(Coaster source)
         {
-            var ret = new Bill();
-
-            ret.VenueLocation = source.Venue?.Location;
-            ret.VenueName = source.Venue?.Name;
-
+            var ret = new Bill()
+            {
+                VenueLocation = source.Venue?.Location,
+                VenueName = source.Venue?.Name
+            };
             foreach (var item in source.Items)
             {
-                var newItem = createItem(item);
+                var newItem = CreateItem(item);
                 if (newItem != null)
                 {
                     ret.Items.Add(newItem);
@@ -31,7 +27,7 @@ namespace Coastr.Services.Impl
             return ret;
         }
 
-        private BillItem createItem(CoasterItem source)
+        private static BillItem CreateItem(CoasterItem source)
         {
             if (source == null)
             {

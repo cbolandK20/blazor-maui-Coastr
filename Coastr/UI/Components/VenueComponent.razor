@@ -4,7 +4,7 @@
 
 <div style="height:80%" name="venuecontent">
     <MudExpansionPanels MultiExpansion="true" Elevation="5">
-        <MudExpansionPanel Text="Basics" IsExpanded="true">
+        <MudExpansionPanel Text="Basics" Expanded="true">
             <TitleContent>
                 <div class="expansion-panel-header-3-grid">
                     <MudText>Daten</MudText>
@@ -23,7 +23,7 @@
                 <MudForm @ref="_form">
                     <MudGrid Style="align-items:center;">
                         <MudItem xs="12">
-                            <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnVenueNameChanged" SearchFunc="SearchItemName"
+                            <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnVenueNameChanged" SearchFunc="@SearchItemName"
                                              CoerceValue="true" CoerceText="false" Required="true" Disabled="@ReadOnly" />
                         </MudItem>
                         @if (state.Capabilities.UseLocation)
@@ -97,7 +97,7 @@
         }
     }
 
-    private async Task<IEnumerable<String>> SearchItemName(string value)
+    private async Task<IEnumerable<String>> SearchItemName(string value, CancellationToken token)
     {
         var result = await service.SearchVenueByNameAsync(value);
         var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name) : new String[0];

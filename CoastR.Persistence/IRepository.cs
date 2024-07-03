@@ -17,6 +17,8 @@ namespace Coastr.Persistence
         public void Delete(TEntity source);
 
         public void Delete(Expression<Func<TEntity, bool>> predicate);
+
+        public void DeleteAll();
         
         public Task<TEntity?> GetAsync(int id);
 

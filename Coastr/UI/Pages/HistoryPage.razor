@@ -1,4 +1,4 @@
-﻿@inject StateContainer state;
+﻿@inject StateContainer state
 @inject IBillingService service
 @inject IApplicationMessageService messageService
 
@@ -116,6 +116,10 @@
     }
 </div>
 
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_NAME">
+    <MudIconButton Icon="fa-solid fa-trash-can" OnClick="DeleteAll" />    
+</SectionContent>
+
 @code {
     private List<Bill> _model { get; set; } = new List<Bill>();
     private IDictionary<string, List<Bill>> _byName = null;
@@ -140,5 +144,16 @@
 
         _byName = _model.GroupBy(it => it.VenueName).ToDictionary(group => group.Key, group => group.ToList());
         _byDate = _model.GroupBy(it => it.Updated.Date).ToDictionary(group => group.Key, group => group.ToList());
+    }
+
+    protected void DeleteAll()
+    {
+        service.DeleteAll();
+        service.SaveAllAsync();
+
+        _byName = new Dictionary<string, List<Bill>>();
+        _byDate = new Dictionary<DateTime, List<Bill>>();
+
+        StateHasChanged();
     }
 }

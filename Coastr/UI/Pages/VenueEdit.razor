@@ -1,7 +1,8 @@
 ﻿@inject StateContainer state
 @inject IJSRuntime jsRuntime
 @inject IVenueService service
-@inject IApplicationMessageService messageService;
+@inject IApplicationMessageService messageService
+@inject WindowStateHandler handler
 
 @page "/editVenue/{VenueId:int}"
 
@@ -11,6 +12,10 @@
 <div style="height:18%" name="venuebuttons">
     <ButtonBarReturnClearOk ClearButtonAction="OnClearClick" OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnClick" />
 </div>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_NAME">
+    <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+</SectionContent>
 
 @code {
     [Parameter]
@@ -107,4 +112,8 @@
         StateHasChanged();
     }
 
+    protected async void RefreshState()
+    {
+        await handler.InitState();
+    }
 }

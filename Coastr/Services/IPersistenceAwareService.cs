@@ -15,6 +15,12 @@ namespace Coastr.Services
 
         Task<List<TModel>> GetListAsync(Expression<Func<TModel, bool>> predicate);
         TModel Save(TModel source);
+        
+        void DeleteAll();
+
+        void Delete(int Id);
+
+        void Delete(TModel source);
 
         public Task SaveAllAsync();
     }

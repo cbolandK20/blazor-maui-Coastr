@@ -7,22 +7,22 @@ namespace Coastr.Services.Impl
     {
         private const string SETTINGS_FILENAME = "Settings.dat";
 
-        private string GetPath()
+        private static string GetPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CoastR");            
         }
 
-        private StreamReader createReader(string filename)
+        private static StreamReader CreateReader(string filename)
         {
             var filePath = Path.Combine(GetPath(), filename);
             return File.OpenText(filePath);
         }
        
-        private async Task<string> LoadFileAsync(string filename)
+        private static async Task<string> LoadFileAsync(string filename)
         {
             try
             {
-                using StreamReader reader = createReader(filename);
+                using StreamReader reader = CreateReader(filename);
                 return await reader.ReadToEndAsync();
             }
             catch (Exception )
@@ -32,11 +32,11 @@ namespace Coastr.Services.Impl
             return null;
         }
 
-        private string LoadFile(string filename)
+        private static string LoadFile(string filename)
         {
             try
             {
-                using StreamReader reader = createReader(filename);
+                using StreamReader reader = CreateReader(filename);
                 return reader.ReadToEnd();
             }
             catch (Exception )
@@ -46,15 +46,15 @@ namespace Coastr.Services.Impl
             return null;
         }
 
-        private StreamWriter createWriter(string filename)
+        private static StreamWriter CreateWriter(string filename)
         {
             var filePath = Path.Combine(GetPath(), filename);
             return File.CreateText(filePath);
         }
 
-        private async Task SaveFileAsync(string filename, string data)
+        private static async Task SaveFileAsync(string filename, string data)
         {
-            using StreamWriter writer = createWriter(filename);
+            using StreamWriter writer = CreateWriter(filename);
             try
             {
                 await writer.WriteAsync(data);

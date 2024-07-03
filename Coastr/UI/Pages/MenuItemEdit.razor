@@ -52,10 +52,11 @@
         await jsRuntime.InvokeVoidAsync("history.back");
     }
 
-    private void OnDeleteKlick()
+    private async void OnDeleteKlick()
     {
         coasterItemService.DeleteFromCoaster(_model);
         service.Delete(_model);
+        await service.SaveAllAsync();
         OnReturnKlick();
     }
 

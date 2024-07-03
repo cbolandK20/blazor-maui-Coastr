@@ -1,5 +1,6 @@
 ﻿using Coastr.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Coastr.Persistence.Impl
@@ -76,7 +77,7 @@ namespace Coastr.Persistence.Impl
         }
 
         public void Delete(TEntity source)
-        {
+        {            
             _dbSet.Remove(source);
         }
 
@@ -85,5 +86,14 @@ namespace Coastr.Persistence.Impl
             var toDelete = GetList(predicate).ToArray();
             _dbSet.RemoveRange(toDelete);
         }
+
+        public void DeleteAll()
+        {
+            if (_dbSet.Any())
+            {
+                _dbSet.RemoveRange(_dbSet.ToList());
+            }
+        }
+
     }
 }

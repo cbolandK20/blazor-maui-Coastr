@@ -22,7 +22,7 @@
     [Parameter]
     public Func<String, String> validationMethod { get; set; }
 
-    private async Task<IEnumerable<String>> SearchItemName(string value)
+    private async Task<IEnumerable<String>> SearchItemName(string value, CancellationToken token)
     {        
         var result = await service.SearchItemsByName(value);
         var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name).Distinct() : new String[0];

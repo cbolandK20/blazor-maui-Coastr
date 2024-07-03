@@ -4,14 +4,9 @@ using CoastR.Model;
 
 namespace Coastr.Services.Impl
 {
-    public class CoasterService : AbstractPersistenceAwareService<ICoasterRepository, Coaster>, ICoasterService
+    public class CoasterService (ICoasterRepository repo, IBillingService billingService) : AbstractPersistenceAwareService<ICoasterRepository, Coaster>(repo), ICoasterService
     {
-        private IBillingService _billingService;
-
-        public CoasterService(ICoasterRepository repo, IBillingService billingService) : base(repo)
-        {
-            _billingService = billingService;
-        }
+        private readonly IBillingService _billingService = billingService;
 
         public Coaster CreateCoaster(Venue venue)
         {
@@ -30,7 +25,7 @@ namespace Coastr.Services.Impl
             }
 
             var current = await _repo.GetAllAsync();
-            if (!current.Any())
+            if (current.Count == 0)
             {
                 return ret;
             }
@@ -52,7 +47,7 @@ namespace Coastr.Services.Impl
             }
 
             var current = await _repo.GetListAsync(item => item.Venue.Id == source.Id);
-            if (!current.Any())
+            if (current.Count == 0)
             {
                 return ret;
             }

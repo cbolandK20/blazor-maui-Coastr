@@ -8,7 +8,7 @@ namespace Coastr.Services
         private CancellationTokenSource _cancelTokenSource;
         private bool _isCheckingLocation;
 
-        protected async Task<GeoPosition> GetCachedLocationAsync()
+        protected static async Task<GeoPosition> GetCachedLocationAsync()
         {
             try
             {
@@ -30,7 +30,7 @@ namespace Coastr.Services
             try
             {
                 _isCheckingLocation = true;
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(5));
+                GeolocationRequest request = new (GeolocationAccuracy.High, TimeSpan.FromSeconds(5));
                 _cancelTokenSource = new CancellationTokenSource();
 
                 var result = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);

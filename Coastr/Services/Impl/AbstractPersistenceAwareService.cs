@@ -4,16 +4,10 @@ using System.Linq.Expressions;
 
 namespace Coastr.Services.Impl
 {
-    public abstract class AbstractPersistenceAwareService<TRepository, TModel> : IPersistenceAwareService<TModel> where TRepository : IRepository<TModel>
+    public abstract class AbstractPersistenceAwareService<TRepository, TModel>(TRepository repo) : IPersistenceAwareService<TModel> where TRepository : IRepository<TModel>
         where TModel : AbstractPersistenceBase
     {
-
-        protected TRepository _repo;
-
-        public AbstractPersistenceAwareService(TRepository repo)
-        {
-            _repo = repo;
-        }
+        protected readonly TRepository _repo = repo;
 
         public Task<TModel> GetAsync(int Id)
         {
@@ -51,6 +45,22 @@ namespace Coastr.Services.Impl
         public async Task SaveAllAsync()
         {
             await _repo.SaveAllAsync();
+        }
+
+        public void DeleteAll()
+        {
+            _repo.DeleteAll();
+        }
+
+        public void Delete(int Id)
+        {            
+            _repo.Delete(it => it.Id == Id);
+
+        }
+
+        public void Delete(TModel source)
+        {
+            _repo.Delete(source);
         }
     }
 }

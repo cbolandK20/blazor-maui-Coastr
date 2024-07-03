@@ -3,8 +3,13 @@
 
 @inject StateContainer state
 @inject ICoasterService service
+@inject WindowStateHandler handler
 
 <CoasterComponent Model="_model"/>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_NAME">
+    <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+</SectionContent>
 
 @code {
 
@@ -12,12 +17,17 @@
 
     protected override void OnInitialized()
     {
-        // if the current venue was deleted - the coaster is deletet too, but thats nor represented in the state
+        // if the current venue was deleted - the coaster is deletet too, but thats not represented in the state
         if (state.HasCoaster && !state.HasVenue) {
             state.CurrentCoaster = null;
         }
         var temp = state.HasCoaster ? state.CurrentCoaster : service.CreateCoaster(state.CurrentVenue);
         _model = state.CurrentCoaster = temp;
         state.HeaderText = _model.Venue?.Name;
+    }
+
+    protected async void RefreshState()
+    {
+        await handler.InitState();
     }
 }

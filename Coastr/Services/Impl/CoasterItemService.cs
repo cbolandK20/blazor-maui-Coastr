@@ -3,11 +3,8 @@ using Coastr.Persistence;
 
 namespace Coastr.Services.Impl
 {
-    public class CoasterItemService : AbstractPersistenceAwareService<ICoasterItemRepository, CoasterItem>, ICoasterItemService
+    public class CoasterItemService(ICoasterItemRepository repo) : AbstractPersistenceAwareService<ICoasterItemRepository, CoasterItem>(repo), ICoasterItemService
     {
-
-        public CoasterItemService(ICoasterItemRepository repo) : base(repo) { }
-
         public CoasterItem AddToCoaster(CoasterItem source, Coaster parent)
         {
             source.Coaster = parent;

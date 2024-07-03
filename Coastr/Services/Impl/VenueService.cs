@@ -4,18 +4,16 @@ using CoastR.Model;
 
 namespace Coastr.Services.Impl
 {
-    public class VenueService : AbstractPersistenceAwareService<IVenueRepository, Venue>, IVenueService
-    {                
-        private readonly ILocationService _locationService;
+    public class VenueService(IVenueRepository repo, ILocationService locationService) : AbstractPersistenceAwareService<IVenueRepository, Venue>(repo), IVenueService
+    {
+        private readonly ILocationService _locationService = locationService;
 
-        public VenueService(IVenueRepository repo, ILocationService locationService) : base (repo)
-        {                 
-            _locationService = locationService;
-        }
         public Venue CreateVenue(GeoPosition location)
         {
-            var ret = new Venue();
-            ret.Location = location;
+            var ret = new Venue()
+            {
+                Location = location
+            };
 
             return ret;
         }
@@ -29,7 +27,7 @@ namespace Coastr.Services.Impl
         {
             Venue ret = null;
             var current = await _repo.GetAllAsync();
-            if (!current.Any())
+            if (current.Count == 0)
             {
                 return ret;
             }
@@ -52,7 +50,7 @@ namespace Coastr.Services.Impl
             return await ShowOnMap(item);
         }
 
-        public  Task<List<Venue>> SearchVenueByNameAsync(string query)
+        public Task<List<Venue>> SearchVenueByNameAsync(string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -78,7 +76,7 @@ namespace Coastr.Services.Impl
             }
 
             _repo.Delete(venue);
-            _repo.SaveAll();            
+            _repo.SaveAll();
         }
     }
 }

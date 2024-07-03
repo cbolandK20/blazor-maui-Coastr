@@ -2,8 +2,8 @@
 
 namespace Coastr.Services.Impl
 {
-    public class MenuService : AbstractPersistenceAwareService<IMenuRepository, Coastr.Model.Menu>, IMenuService
+    public class MenuService(IMenuRepository repo) : AbstractPersistenceAwareService<IMenuRepository, Coastr.Model.Menu>(repo), IMenuService
     {
-        public MenuService(IMenuRepository repo) : base(repo) { }
+        
     }
 }
