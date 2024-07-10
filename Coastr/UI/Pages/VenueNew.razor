@@ -67,7 +67,7 @@
     private async Task PreselectItem(string name)
     {
 
-        var item = _allVenues.FirstOrDefault(item => item.Name.Contains(name));        
+        var item = _allVenues.FirstOrDefault(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
         if (item != null)
         {
             Model = item;

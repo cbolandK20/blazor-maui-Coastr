@@ -1,6 +1,7 @@
 ﻿using Coastr.Model;
 using Coastr.Persistence;
 using CoastR.Model;
+using System.Diagnostics;
 
 namespace Coastr.Services.Impl
 {
@@ -52,6 +53,7 @@ namespace Coastr.Services.Impl
 
         public Task<List<Venue>> SearchVenueByNameAsync(string query)
         {
+            Debug.WriteLine($"SearchVenueByNameAsync: {query}");
             if (string.IsNullOrEmpty(query))
             {
                 return _repo.GetAllAsync();

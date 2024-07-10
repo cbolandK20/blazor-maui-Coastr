@@ -19,6 +19,7 @@
 
     private MenuItem _model { get; set; } = null;
     private MenuItem _viewModel { get; set; } = new MenuItem();
+    private List<MenuItem> _allItems;
 
     private MenuItemComponent itemComponent;
 
@@ -32,7 +33,13 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        _model = await service.GetAsync(MenuItemId.Value);
+
+        var model = service.GetAsync(MenuItemId.Value);
+        var allItems = service.GetAllDistinctAsync();
+        await Task.WhenAll(model, allItems);
+
+        _model = model.Result;
+        _allItems = allItems.Result;
         populateModel(_model, _viewModel);
     }
 
@@ -76,21 +83,15 @@
             return;
         }
         populateAndSave();
-        
-        if (!state.CurrentVenue.Menu.Items.Contains(_model))
-        {
-            state.CurrentVenue.Menu.Items.Add(_model);
-        }
-
         OnReturnKlick();
     }
 
     private async Task PreselectItem(string name)
     {
-        var item = await service.SearchItemByNameAndVenueAsync(name, _model.Menu.Venue.Id.Value);
+        var item = _allItems.FirstOrDefault(it => it.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
         if (item != null)
         {            
-            _viewModel.Name = _model.Name;            
+            _viewModel.Name = item.Name;            
         }
         else
         {
@@ -102,8 +103,9 @@
     public String ValidateName(string name)
     {
         string result = null;
-        var items = _model.Menu.Items == null ? new List<MenuItem>() : _model.Menu.Items;                
-        var item = items.Where(it => it.Name.Equals(name)).FirstOrDefault();
+
+        var menuItems = _model.Menu.Items == null ? new List<MenuItem>() : _model.Menu.Items;                
+        var item = menuItems.Where(it => it.Name.Equals(name)).FirstOrDefault();
         result = item != null && item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase) && item.Id != MenuItemId ?  AppMessages.MSG_ITEM_ALREADY_IN_VENUE : null;
         return result;
     }

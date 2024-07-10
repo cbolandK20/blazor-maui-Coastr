@@ -74,7 +74,6 @@
             Model = service.Save(Model);
         }
 
-
         if (state.HasCoaster)
         {
             coasterItemService.AddToCoaster(Model, ItemIndex.Value, state.CurrentCoaster);
@@ -85,8 +84,8 @@
 
     private async Task PreselectItem(string name)
     {
-        var item = _allItems.FirstOrDefault(item => item.Name.Contains(name));
-        if (item != null)
+        var item = _allItems.FirstOrDefault(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+            if (item != null)
         {
             Model.Name = item.Name;
             Model.Price = item.Price;

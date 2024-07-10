@@ -8,7 +8,7 @@ namespace Coastr.Model
         // todo: umsetzen
         public bool LocationReCheck { get; set; } = true;
         public string BillingCurrency { get; set; } = "EUR";
-        public int LocationThreshold { get; set; } = 200;
+        public int LocationThreshold { get; set; } = 50;
         public int TimeThreshold { get; set; } = 2;
 
         private string _uiTheme = "";

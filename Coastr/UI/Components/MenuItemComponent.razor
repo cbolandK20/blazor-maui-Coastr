@@ -25,7 +25,7 @@
     private async Task<IEnumerable<String>> SearchItemName(string value, CancellationToken token)
     {        
         var result = await service.SearchItemsByName(value);
-        var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name).Distinct() : new String[0];
+        var ret = result.Any() ? result.Select(ItemDelegateList => ItemDelegateList.Name).Distinct().ToList() : new List<String>();
 
         return ret;
     }
