@@ -5,9 +5,11 @@
 
 @inject StateContainer state
 
-<MudThemeProvider @bind-IsDarkMode="@_darkMode" />/>
+<MudThemeProvider @bind-IsDarkMode="@_darkMode" />
+<MudPopoverProvider/>
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <ApplicationMessageComponent/>
 
 <MudLayout>

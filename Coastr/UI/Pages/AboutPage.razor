@@ -1,5 +1,7 @@
 ﻿@using System.Reflection
 
+@inject StateContainer state
+
 @page "/about"
 
 <div class="full-size" style="overflow-y:scroll">
@@ -27,5 +29,7 @@
         base.OnInitialized();
         _version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         //_version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+        state.HeaderText = "Über";
     }
 }
