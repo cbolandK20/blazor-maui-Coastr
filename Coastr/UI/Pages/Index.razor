@@ -4,11 +4,16 @@
 @inject StateContainer state
 @inject ICoasterService service
 @inject WindowStateHandler handler
+@inject NavigationManager navigation
 
 <CoasterComponent Model="_model"/>
 
-<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_NAME">
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_BUTTON">
     <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+</SectionContent>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText HeaderTextClickAction="JumpToVenue"/>
 </SectionContent>
 
 @code {
@@ -29,5 +34,11 @@
     protected async void RefreshState()
     {
         await handler.InitState();
+    }
+
+    protected void JumpToVenue()
+    {
+        var linkTarget = $"/{MagicStrings.URL_VENUE_EDIT}/{_model.Venue.Id}";
+        navigation.NavigateTo(linkTarget, false);
     }
 }

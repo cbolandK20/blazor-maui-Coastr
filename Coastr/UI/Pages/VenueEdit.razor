@@ -4,7 +4,8 @@
 @inject IApplicationMessageService messageService
 @inject WindowStateHandler handler
 
-@page "/editVenue/{VenueId:int}"
+<!-- = page ... -->
+@attribute [Route(MagicStrings.URL_VENUE_EDIT_FULL)]
 
 <div style="height:80%; overflow-y:scroll" name="venuecontent">
     <VenueComponent Model="_viewModel" @ref="venueComponent" ItemNameChangeEvent="PreselectItem" />
@@ -13,10 +14,13 @@
     <ButtonBarReturnClearOk ClearButtonAction="OnClearClick" OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnClick" />
 </div>
 
-<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_NAME">
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_BUTTON">
     <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
 </SectionContent>
 
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText />
+</SectionContent>
 @code {
     [Parameter]
     public int? VenueId { get; set; }
@@ -37,8 +41,8 @@
     {
         await base.OnInitializedAsync();
         _model = await service.GetAsync(VenueId.Value);
-
         _viewModel = new Venue();
+        
         populateModel(_model, _viewModel);
     }
 

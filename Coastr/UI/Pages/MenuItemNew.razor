@@ -9,11 +9,15 @@
 @page "/newCoasterItem/{ReturnUrl}/{ItemIndex:int}"
 
 <div style="height:80%" name="venuecontent">
-    <MenuItemComponent Model="Model" ItemNameChangeEvent="PreselectItem" @ref="_itemComponent" validationMethod="ValidateName"></MenuItemComponent>
+    <MenuItemComponent Model="_model" ItemNameChangeEvent="PreselectItem" @ref="_itemComponent" validationMethod="ValidateName"></MenuItemComponent>
 </div>
 <div style="height:18%" name="venuebuttons">
     <ButtonBarReturnOk OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnClick" />
 </div>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText />
+</SectionContent>
 
 @code {
     [Parameter]
@@ -22,20 +26,17 @@
     [Parameter]
     public int? ItemIndex { get; set; } = null;
 
-    public MenuItem Model { get; set; } = null;
-
+    private MenuItem _model { get; set; } = null;
     private MenuItemComponent _itemComponent;
-
     private List<MenuItem> _allItems;
-
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         state.HeaderText = "Was darfs sein?";
 
-        Model = new MenuItem();
-        Model.Menu = state.CurrentVenue.Menu;
+        _model = new MenuItem();
+        _model.Menu = state.CurrentVenue.Menu;
     }
 
     protected override async Task OnInitializedAsync()
@@ -63,20 +64,20 @@
             return;
         }
 
-        if (state.CurrentVenue.Menu.Items.Any(it => it.Name.Equals(Model.Name)))
+        if (state.CurrentVenue.Menu.Items.Any(it => it.Name.Equals(_model.Name)))
         {
-            Model = state.CurrentVenue.Menu.Items.FirstOrDefault(it => it.Name.Equals(Model.Name));
+            _model = state.CurrentVenue.Menu.Items.FirstOrDefault(it => it.Name.Equals(_model.Name));
         }
         else
         {
-            Model.Menu = state.CurrentVenue.Menu;
-            state.CurrentVenue?.Menu.Items.Add(Model);
-            Model = service.Save(Model);
+            _model.Menu = state.CurrentVenue.Menu;
+            state.CurrentVenue?.Menu.Items.Add(_model);
+            _model = service.Save(_model);
         }
 
         if (state.HasCoaster)
         {
-            coasterItemService.AddToCoaster(Model, ItemIndex.Value, state.CurrentCoaster);
+            coasterItemService.AddToCoaster(_model, ItemIndex.Value, state.CurrentCoaster);
         }
 
         OnReturnClick();
@@ -87,12 +88,12 @@
         var item = _allItems.FirstOrDefault(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
             if (item != null)
         {
-            Model.Name = item.Name;
-            Model.Price = item.Price;
+            _model.Name = item.Name;
+            _model.Price = item.Price;
         }
         else
         {
-            Model.Name = name;
+            _model.Name = name;
         }
         StateHasChanged();
     }

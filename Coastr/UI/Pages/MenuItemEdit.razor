@@ -12,6 +12,10 @@
 <div style="height:20%" name="venuebuttons">
     <ButtonBarReturnClearOk ClearButtonAction="OnDeleteKlick" OkButtonAction="OnOkKlick" ReturnButtonAction="OnReturnKlick" />
 </div>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText />
+</SectionContent>
 @code {
 
     [Parameter]
@@ -19,7 +23,7 @@
 
     private MenuItem _model { get; set; } = null;
     private MenuItem _viewModel { get; set; } = new MenuItem();
-    private List<MenuItem> _allItems;
+    private IList<MenuItem> _allItems;
 
     private MenuItemComponent itemComponent;
 
@@ -34,12 +38,9 @@
     {
         await base.OnInitializedAsync();
 
-        var model = service.GetAsync(MenuItemId.Value);
-        var allItems = service.GetAllDistinctAsync();
-        await Task.WhenAll(model, allItems);
-
-        _model = model.Result;
-        _allItems = allItems.Result;
+        _model = await service.GetAsync(MenuItemId.Value);
+        _allItems = _model.Menu.Items;        
+        
         populateModel(_model, _viewModel);
     }
 
@@ -103,9 +104,8 @@
     public String ValidateName(string name)
     {
         string result = null;
-
-        var menuItems = _model.Menu.Items == null ? new List<MenuItem>() : _model.Menu.Items;                
-        var item = menuItems.Where(it => it.Name.Equals(name)).FirstOrDefault();
+        
+        var item = _allItems.Where(it => it.Name.Equals(name)).FirstOrDefault();
         result = item != null && item.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase) && item.Id != MenuItemId ?  AppMessages.MSG_ITEM_ALREADY_IN_VENUE : null;
         return result;
     }

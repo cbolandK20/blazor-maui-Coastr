@@ -1,0 +1,39 @@
+﻿@using System.ComponentModel
+
+@implements IDisposable
+
+@inject StateContainer state
+
+<div @onclick="OnHeaderTextClicked">
+@state.HeaderText
+</div>
+
+@code {
+    [Parameter]
+    public Action HeaderTextClickAction { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.PropertyChanged += OnHeaderTextChanged;
+    }
+
+    public void Dispose()
+    {
+        state.PropertyChanged -= OnHeaderTextChanged;
+    }
+
+    public void OnHeaderTextChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (!nameof(StateContainer.HeaderText).Equals(e?.PropertyName))
+        {
+            return;
+        }
+        StateHasChanged();
+    }
+
+    public void OnHeaderTextClicked()
+    {
+       HeaderTextClickAction?.Invoke();
+    }
+}

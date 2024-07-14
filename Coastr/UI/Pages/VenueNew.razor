@@ -11,6 +11,11 @@
 <div style="height:18%" name="venuebuttons">
     <ButtonBarReturnOk OkButtonAction="OnOkClick" ReturnButtonAction="OnReturnKlick" />
 </div>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText />
+</SectionContent>
+
 @code {
     [Parameter]
     public string ReturnUrl { get; set; } = "/";
