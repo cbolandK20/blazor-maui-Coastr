@@ -62,7 +62,8 @@
         {
             state.CurrentCoaster.Venue = Model;
         }
-        state.CurrentVenue = service.Save(Model);
+        state.CurrentVenue = service.UpdateAndFlush(Model);
+        
         if (!String.IsNullOrEmpty(ReturnUrl))
         {
             navigation.NavigateTo(ReturnUrl.Replace("-","/"));

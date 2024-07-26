@@ -53,7 +53,7 @@ namespace Coastr.Services
         public async void OnWindowDeactivated(object sender, EventArgs e)
         {
             await _settingsService.SaveSettingsAsync(_state.Settings);
-            await _coasterService.SaveAllAsync();
+            await _coasterService.FlushAsync();
         }
 
         public async void OnWindowCreated(object sender, EventArgs e)

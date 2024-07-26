@@ -48,7 +48,7 @@
     private void OnReturnClick()
     {
         var target = string.IsNullOrEmpty(ReturnUrl) ? "/" : ReturnUrl;
-        navigation.NavigateTo(target);
+        navigation.NavigateTo(target, true);
     }
 
     private async void OnClearClick()
@@ -72,7 +72,7 @@
         {
             _model.Menu = state.CurrentVenue.Menu;
             state.CurrentVenue?.Menu.Items.Add(_model);
-            _model = service.Save(_model);
+            _model = service.Update(_model);
         }
 
         if (state.HasCoaster)
@@ -80,6 +80,7 @@
             coasterItemService.AddToCoaster(_model, ItemIndex.Value, state.CurrentCoaster);
         }
 
+        await service.FlushAsync();
         OnReturnClick();
     }
 

@@ -78,7 +78,7 @@ namespace Coastr.Services.Impl
             }
 
             _repo.Delete(venue);
-            _repo.SaveAll();
+            _repo.Flush();
         }
     }
 }

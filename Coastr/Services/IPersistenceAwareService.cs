@@ -14,14 +14,16 @@ namespace Coastr.Services
         IList<TModel> GetList(Expression<Func<TModel, bool>> predicate);
 
         Task<List<TModel>> GetListAsync(Expression<Func<TModel, bool>> predicate);
-        TModel Save(TModel source);
-        
+        TModel Update(TModel source);
+
+        TModel UpdateAndFlush(TModel source);
+
         void DeleteAll();
 
         void Delete(int Id);
 
         void Delete(TModel source);
 
-        public Task SaveAllAsync();
+        public Task FlushAsync();
     }
 }

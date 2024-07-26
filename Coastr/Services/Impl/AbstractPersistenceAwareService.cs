@@ -34,17 +34,25 @@ namespace Coastr.Services.Impl
             return _repo.GetList(predicate);
         }
 
+        public TModel Update(TModel source)
+        {
+            if (source == null)
+            {
+                return null;
+            }
+            return _repo.Update(source);
+        }
 
-        public TModel Save(TModel source)
+        public TModel UpdateAndFlush(TModel source)
         {
             var ret = _repo.Update(source);
-            _repo.SaveAll();
+            _repo.Flush();
 
             return ret;
         }
-        public async Task SaveAllAsync()
+        public async Task FlushAsync()
         {
-            await _repo.SaveAllAsync();
+            await _repo.FlushAsync();
         }
 
         public void DeleteAll()

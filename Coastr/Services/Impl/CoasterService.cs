@@ -73,19 +73,19 @@ namespace Coastr.Services.Impl
             }
 
             var bill = _billingService.CreateBill(source);
-            _billingService.Save(bill);
+            _billingService.Update(bill);
 
             _repo.Delete(source);
-            return _repo.SaveAll() > 0;
+            return _repo.Flush() > 0;
         }
 
-        public new void Save(Coaster source)
+        public new void Update(Coaster source)
         {
             if (source.Venue == null)
             {
                 return;
             }
-            base.Save(source);
+            base.Update(source);
         }
 
         public async Task<Coaster> GetLatest(int timeThreshold)

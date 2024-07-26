@@ -10,7 +10,7 @@ namespace Coastr.Persistence.Impl
         protected DbSet<TEntity> _dbSet { get; private set; }
         private CoasterDBContext _context;
 
-        public Task<int> SaveAllAsync()
+        public Task<int> FlushAsync()
         {
             return _context.SaveChangesAsync(); 
         }
@@ -35,7 +35,7 @@ namespace Coastr.Persistence.Impl
             _dbSet.UpdateRange(source);
         }
 
-        public int SaveAll()
+        public int Flush()
         {            
             return _context.SaveChanges();
         }

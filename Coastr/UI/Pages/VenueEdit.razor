@@ -96,7 +96,7 @@
     private void PopulateAndSave()
     {
         populateModel(_viewModel, _model);
-        _model = service.Save(_model);
+        _model = service.UpdateAndFlush(_model);
         populateModel(_model, _viewModel);
     }
 

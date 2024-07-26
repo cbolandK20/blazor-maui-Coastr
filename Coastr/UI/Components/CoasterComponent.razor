@@ -198,7 +198,7 @@
     {
         source.Count++;
         source.Model.Count = source.Count;
-        coasterItemService.Save(source.Model);
+        coasterItemService.UpdateAndFlush(source.Model);
     }
 
     private void DecreaseItemCount(CoasterItemViewModel source)
@@ -210,7 +210,7 @@
         }
         source.Count--;
         source.Model.Count = source.Count;
-        coasterItemService.Save(source.Model);
+        coasterItemService.UpdateAndFlush(source.Model);
     }
 
     private void DeleteItem(CoasterItemViewModel source)

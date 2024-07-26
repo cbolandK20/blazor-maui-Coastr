@@ -64,14 +64,14 @@
     {
         coasterItemService.DeleteFromCoaster(_model);
         service.Delete(_model);
-        await service.SaveAllAsync();
+        await service.FlushAsync();
         OnReturnKlick();
     }
 
     private void populateAndSave()
     {
         populateModel(_viewModel, _model);
-        _model = service.Save(_model);
+        _model = service.UpdateAndFlush(_model);
         populateModel(_model, _viewModel);
     }
 

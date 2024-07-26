@@ -4,9 +4,9 @@ namespace Coastr.Persistence
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        public Task<int> SaveAllAsync();
+        public Task<int> FlushAsync();
         
-        public int SaveAll();
+        public int Flush();
 
         public TEntity Add(TEntity source);
 

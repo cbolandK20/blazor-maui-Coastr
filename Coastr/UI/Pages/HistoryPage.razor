@@ -149,10 +149,10 @@
         _byDate = _model.GroupBy(it => it.Updated.Date).ToDictionary(group => group.Key, group => group.ToList());
     }
 
-    protected void DeleteAll()
+    protected async void DeleteAll()
     {
         service.DeleteAll();
-        service.SaveAllAsync();
+        service.FlushAsync();
 
         _byName = new Dictionary<string, List<Bill>>();
         _byDate = new Dictionary<DateTime, List<Bill>>();

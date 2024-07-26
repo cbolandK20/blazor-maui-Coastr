@@ -11,7 +11,7 @@ namespace Coastr.Services.Impl
             parent.Items.Add(source);
 
             var ret = _repo.Add(source);
-            _repo.SaveAll();
+            _repo.Flush();
 
             return ret;
         }
@@ -32,13 +32,13 @@ namespace Coastr.Services.Impl
         {
             source.Coaster.Items.Remove(source);
             _repo.Delete(source);
-            _repo.SaveAll();
+            _repo.Flush();
         }
 
         public void DeleteFromCoaster(Model.MenuItem source)
         {
             _repo.Delete(it => it.MenuItem.Id == source.Id);
-            _repo.SaveAll();
+            _repo.Flush();
         }
     }
 }
