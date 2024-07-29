@@ -102,6 +102,28 @@
     text-align: center;
 }
 
+.button-grid-2-rtl {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+    direction: rtl;
+}
+
+
+.button-grid-1 {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
 .font-size-buttons-bottom {
     font-size: min(23vw, 11vh) !important;
 }

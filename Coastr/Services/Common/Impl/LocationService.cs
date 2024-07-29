@@ -1,7 +1,6 @@
-﻿using Coastr.Model;
-using CoastR.Model;
+﻿using CoastR.Model;
 
-namespace Coastr.Services
+namespace Coastr.Services.Common.Impl
 {
     public class LocationService : ILocationService
     {
@@ -15,8 +14,8 @@ namespace Coastr.Services
                 var result = await Geolocation.Default.GetLastKnownLocationAsync();
                 return LocationUtils.ToPosition(result);
 
-            }            
-            catch (Exception) 
+            }
+            catch (Exception)
             {
                 // FeatureNotSupportedException, FeatureNotEnabledException, PermissionException
                 // Unable to get location
@@ -30,7 +29,7 @@ namespace Coastr.Services
             try
             {
                 _isCheckingLocation = true;
-                GeolocationRequest request = new (GeolocationAccuracy.High, TimeSpan.FromSeconds(5));
+                GeolocationRequest request = new(GeolocationAccuracy.High, TimeSpan.FromSeconds(5));
                 _cancelTokenSource = new CancellationTokenSource();
 
                 var result = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
@@ -40,7 +39,7 @@ namespace Coastr.Services
             //   FeatureNotSupportedException
             //   FeatureNotEnabledException
             //   PermissionException
-            catch (Exception )
+            catch (Exception)
             {
                 // Unable to get location
                 // do nothing here

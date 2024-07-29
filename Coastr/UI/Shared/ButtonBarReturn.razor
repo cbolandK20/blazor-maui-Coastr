@@ -1,0 +1,21 @@
+﻿<div class="button-grid-1">
+    <div class="centered-item">
+        <MudIcon Icon="fa-solid fa-circle-arrow-left"
+                 Class="font-size-buttons-bottom"
+                 @onclick="@ReturnButtonAction">
+        </MudIcon>
+    </div>        
+</div>
+
+@code {    
+
+    [Parameter]
+    public Action ReturnButtonAction { get; set; }
+
+    [Parameter]
+    public Action OkButtonAction { get; set; }
+
+
+
+
+}

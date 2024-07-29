@@ -1,0 +1,73 @@
+﻿@inject StateContainer state
+@inject ICoasterService service
+@inject IBillingService billingService
+@inject IApplicationMessageService messageService
+
+<!-- = page ... -->
+@attribute [Route(MagicStrings.URL_BILL_LIST)]
+
+<div style="height:100%; overflow-y:scroll" name="billscontent">
+    @if (_model.Any())
+    {
+        <MudExpansionPanels MultiExpansion="false" Elevation="5">
+            @foreach (var modelItem in _model)
+            {
+                var id = modelItem.Id;
+                <BillComponent 
+                    Model="@modelItem" 
+                    Expanded="@id.Equals(state.CurrentCoaster.Id)" 
+                    OnPayAction="OnPayCoaster"/>
+            }
+        </MudExpansionPanels>
+    }
+</div>
+
+<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+    <AppHeaderText />
+</SectionContent>
+
+@code {
+    private IList<Coaster> _model { get; set; } = new List<Coaster>();
+
+    AggregateDefinition<CoasterItem> _sumAggregation = new AggregateDefinition<CoasterItem>()
+        {
+            Type = AggregateType.Custom,
+            CustomAggregate = x =>
+            {
+                var sum = x.Sum(it => it.Price);
+                return $"{sum.Value.ToString("C")}";
+            }
+        };
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        state.HeaderText = "Rechnungen";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _model = await service.GetOpenCoastersAsync();
+        if (!_model.Any())
+        {
+            state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_NO_DATA, ApplicationMessageType.INFO));
+        }
+    }
+
+    private async Task OnPayCoaster(Coaster source)
+    {
+        if (!service.PayCoaster(source))
+        {
+            return;
+        }
+        state.Messages.Add(messageService.CreateMessage(ApplicationMessageCode.MSG_COASTER_BILLED, ApplicationMessageType.INFO));
+        if (source.Id == state.CurrentCoaster.Id)
+        {
+            state.CurrentCoaster = null;
+        }
+        _model.Remove(source);
+        StateHasChanged();
+    }
+    
+}

@@ -4,7 +4,7 @@
     <MudForm @ref="Form" @bind-IsValid="@success" >
         <MudAutocomplete T="string" Label="Name" Value="Model.Name" ValueChanged="OnItemNameChanged" SearchFunc="@SearchItemName"
                          CoerceValue="true" CoerceText="false" Required="true" Validation="@validationMethod" />
-        <MudNumericField @bind-Value="Model.Price" Label="Preis" Variant="Variant.Text" Format="N2" Min="0" />
+        <MudNumericField @bind-Value="Model.Price" Label="Preis" Variant="Variant.Text" Format="N2" Min="0"  Step=".5M"/>
     </MudForm>    
 </MudPaper>
 

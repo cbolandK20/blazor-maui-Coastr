@@ -1,6 +1,7 @@
 ﻿@inject StateContainer state
 @inject NavigationManager navigation
 @inject IVenueService service
+@inject ILocationService locationService
 
 @page "/newVenue"
 @page "/newVenue/{ReturnUrl}"
@@ -29,15 +30,20 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        state.HeaderText = "Wo bist du?";        
-
-        Model = new Venue() { Location = state.CurrentPosition };
-
+        state.HeaderText = "Wo bist du?";
+        Model = new Venue();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _allVenues = await service.GetAllAsync();
+        var location = locationService.GetCurrentLocationAsync();
+        var allVenues = service.GetAllAsync();
+        await Task.WhenAll(location, allVenues);
+
+        _allVenues = allVenues.Result;
+        Model.Location = location.Result;
+        state.CurrentPosition = Model.Location;
+
         await base.OnInitializedAsync();
     }
 

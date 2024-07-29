@@ -6,14 +6,20 @@
 @inject WindowStateHandler handler
 @inject NavigationManager navigation
 
-<CoasterComponent Model="_model"/>
+<CoasterComponent Model="_model" />
 
 <SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_BUTTON">
-    <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+    <div class="button-grid-2-rtl">
+        <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+        @if (_model.Id.HasValue)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.ReceiptLong" OnClick="JumpToBill" />
+        }
+    </div>
 </SectionContent>
 
 <SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
-    <AppHeaderText HeaderTextClickAction="JumpToVenue"/>
+    <AppHeaderText HeaderTextClickAction="JumpToVenue" />
 </SectionContent>
 
 @code {
@@ -23,7 +29,8 @@
     protected override void OnInitialized()
     {
         // if the current venue was deleted - the coaster is deletet too, but thats not represented in the state
-        if (state.HasCoaster && !state.HasVenue) {
+        if (state.HasCoaster && !state.HasVenue)
+        {
             state.CurrentCoaster = null;
         }
         var temp = state.HasCoaster ? state.CurrentCoaster : service.CreateCoaster(state.CurrentVenue);
@@ -40,5 +47,10 @@
     {
         var linkTarget = $"/{MagicStrings.URL_VENUE_EDIT}/{_model.Venue.Id}";
         navigation.NavigateTo(linkTarget, false);
+    }
+
+    protected void JumpToBill()
+    {
+        navigation.NavigateTo(MagicStrings.URL_BILL_LIST, false);
     }
 }

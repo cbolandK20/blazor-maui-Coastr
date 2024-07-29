@@ -1,0 +1,51 @@
+﻿@inject StateContainer state
+@inject ICoasterService service
+@inject IApplicationMessageService messageService
+
+<MudExpansionPanel Text="@Model.Venue?.Name" Expanded="@Expanded">
+    <TitleContent>
+        <div class="expansion-panel-header-3-grid">
+            <MudText>@Model.Venue?.Name</MudText>
+            <MudText>@string.Format("{0:C}", _sum)</MudText>
+            <MudIconButton Variant="@Variant.Filled"
+                           Color="@Color.Primary"
+                           OnClick="() => OnPayCoaster()"
+                           Icon="fa-solid fa-money-bill-1-wave"
+                           Disabled=@(!Model.Items.Any()) />
+        </div>
+    </TitleContent>
+    <ChildContent>
+        <MudDataGrid Items="@Model.Items" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true" Height="100%" >
+            <NoRecordsContent>
+                @AppMessages.MSG_NO_DATA
+            </NoRecordsContent>
+            <Columns>
+                <PropertyColumn Property="x => x.MenuItem.Name" Title="Name" />
+                <PropertyColumn Property="x => x.Count" Title="Menge" />
+                <PropertyColumn Property="x => x.MenuItem.Price" Title="Preis" Format="C" />
+                <PropertyColumn Property="x => x.Price" Title="Summe" Format="C" />
+            </Columns>
+        </MudDataGrid>
+    </ChildContent>
+</MudExpansionPanel>
+
+@code {
+    [Parameter]
+    public Coaster Model { get; set; }
+    [Parameter]
+    public bool Expanded { get; set; } = false;
+    [Parameter]
+    public EventCallback<Coaster> OnPayAction { get; set; }
+
+    private Decimal? _sum;
+
+    protected override void OnInitialized()
+    {        
+        _sum = Model?.Items.Sum(it => it.Price);
+    }
+
+    private async Task OnPayCoaster()
+    {
+        OnPayAction.InvokeAsync(Model);
+    }
+}
