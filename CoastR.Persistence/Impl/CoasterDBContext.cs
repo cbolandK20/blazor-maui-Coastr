@@ -24,10 +24,10 @@ namespace Coastr.Persistence.Impl
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {            
+        {
             string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CoastR");
-            Directory.CreateDirectory(directoryPath);   
-            string dbPath = Path.Combine(directoryPath,"CoastR.db3");
+            Directory.CreateDirectory(directoryPath);
+            string dbPath = Path.Combine(directoryPath, "CoastR.db3");
             //string dbPath = "CoastR.db3";
 
             optionsBuilder
@@ -52,10 +52,10 @@ namespace Coastr.Persistence.Impl
                 .WithOne(e => e.Menu)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Coastr.Model.MenuItem>().ToTable("MENU_ITEMS");                
+            modelBuilder.Entity<Coastr.Model.MenuItem>().ToTable("MENU_ITEMS");
 
             modelBuilder.Entity<Coaster>().ToTable("COASTERS")
-                .HasMany( e => e.Items)
+                .HasMany(e => e.Items)
                 .WithOne(e => e.Coaster)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Coaster>()

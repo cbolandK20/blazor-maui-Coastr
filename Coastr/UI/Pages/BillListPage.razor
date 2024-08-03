@@ -15,7 +15,7 @@
                 var id = modelItem.Id;
                 <BillComponent 
                     Model="@modelItem" 
-                    Expanded="@id.Equals(state.CurrentCoaster.Id)" 
+                    Expanded="@id.Equals(state.CurrentCoaster?.Id)" 
                     OnPayAction="OnPayCoaster"/>
             }
         </MudExpansionPanels>

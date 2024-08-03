@@ -1,6 +1,5 @@
 ﻿using Coastr.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Coastr.Persistence.Impl
@@ -12,12 +11,12 @@ namespace Coastr.Persistence.Impl
 
         public Task<int> FlushAsync()
         {
-            return _context.SaveChangesAsync(); 
+            return _context.SaveChangesAsync();
         }
 
         public TEntity Add(TEntity source)
         {
-           return _dbSet.Add(source).Entity;        
+            return _dbSet.Add(source).Entity;
         }
 
         public TEntity Update(TEntity source)
@@ -36,7 +35,7 @@ namespace Coastr.Persistence.Impl
         }
 
         public int Flush()
-        {            
+        {
             return _context.SaveChanges();
         }
 
@@ -67,7 +66,7 @@ namespace Coastr.Persistence.Impl
 
         public Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.AsQueryable().Where(predicate).ToListAsync();            
+            return _dbSet.AsQueryable().Where(predicate).ToListAsync();
 
         }
         public IList<TEntity> GetList(Expression<Func<TEntity, bool>> predicate)
@@ -77,7 +76,7 @@ namespace Coastr.Persistence.Impl
         }
 
         public void Delete(TEntity source)
-        {            
+        {
             _dbSet.Remove(source);
         }
 

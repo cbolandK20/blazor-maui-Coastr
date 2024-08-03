@@ -3,44 +3,65 @@
 
 @inject StateContainer state
 @inject ICoasterService service
+@inject IVenueService venueService
+@inject ILocationService locationService
 @inject WindowStateHandler handler
 @inject NavigationManager navigation
 
-<CoasterComponent Model="_model" />
+@if (_model != null)
+{
+    <CoasterComponent Model="_model" />
 
-<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_BUTTON">
-    <div class="button-grid-2-rtl">
-        <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
-        @if (_model.Id.HasValue)
-        {
-            <MudIconButton Icon="@Icons.Material.Filled.ReceiptLong" OnClick="JumpToBill" />
-        }
-    </div>
-</SectionContent>
+    <SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_BUTTON">
+        <div class="button-grid-2-rtl">
+            <MudIconButton Icon="fa-solid fa-rotate" OnClick="RefreshState" />
+            @if (_model.Id.HasValue)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.ReceiptLong" OnClick="JumpToBill" />
+            }
+        </div>
+    </SectionContent>
 
-<SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
-    <AppHeaderText HeaderTextClickAction="JumpToVenue" />
-</SectionContent>
-
+    <SectionContent SectionName="@MagicStrings.SECTION_APP_HEADER_TEXT">
+        <AppHeaderText HeaderTextClickAction="JumpToVenue" />
+    </SectionContent>
+}
 @code {
 
     private Coaster _model = null;
 
     protected override void OnInitialized()
     {
-        // if the current venue was deleted - the coaster is deletet too, but thats not represented in the state
-        if (state.HasCoaster && !state.HasVenue)
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Venue venue = null;
+        state.CurrentPosition = await locationService.GetCurrentLocationAsync();
+
+        if (state.HasPosition)
         {
-            state.CurrentCoaster = null;
+            _model = await service.GetCurrentCoasterByPositionAsync(state.CurrentPosition, state.Settings.LocationThreshold);
+            if (_model == null)
+            {
+                venue = await venueService.GetCurrentVenueAsync(state.CurrentPosition, state.Settings.LocationThreshold);
+                state.CurrentVenue = venue;
+                _model = service.CreateCoaster(state.CurrentVenue);
+            }
         }
-        var temp = state.HasCoaster ? state.CurrentCoaster : service.CreateCoaster(state.CurrentVenue);
-        _model = state.CurrentCoaster = temp;
+
+        state.CurrentCoaster = _model;
         state.HeaderText = _model.Venue?.Name;
+
+        return;
     }
 
     protected async void RefreshState()
     {
-        await handler.InitState();
+        navigation.NavigateTo("/",true);
     }
 
     protected void JumpToVenue()

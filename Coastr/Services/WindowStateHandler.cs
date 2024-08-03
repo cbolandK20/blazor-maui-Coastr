@@ -1,7 +1,6 @@
 ﻿using Coastr.Data.Common.Impl;
 using Coastr.Model;
 using Coastr.Services.Common;
-using Microsoft.Maui.Controls;
 
 namespace Coastr.Services
 {
@@ -60,8 +59,7 @@ namespace Coastr.Services
         {
             var settings = _settingsService.LoadSettings();
             _state.Settings = settings;
-            _state.CurrentCoaster = await _coasterService.GetLatest(_state.Settings.TimeThreshold);
-            _state.CurrentVenue = _state.CurrentCoaster?.Venue;
+            await InitState();
         }
 
         public async void OnWindowActivated(object sender, EventArgs e)
@@ -72,33 +70,14 @@ namespace Coastr.Services
         public async Task InitState()
         {
             _state.Messages.Add(_messageService.CreateMessage(ApplicationMessageCode.MSG_REFRESHING, ApplicationMessageType.INFO));
-            
-            var position = await _locationService.GetCurrentLocationAsync();
-            _state.Capabilities.UseLocation = position != null
-                ;
-            if (position != null)
-            {
-                var venue = await _venueService.GetCurrentVenueAsync(position, _state.Settings.LocationThreshold);
-                if (_state.CurrentVenue != venue)
-                {
-                    _state.CurrentVenue = venue;
-                }
-                var coaster = await _coasterService.GetCurrentCoasterByVenueAsync(venue);
-                _state.CurrentPosition = position;
 
-                if (_state.CurrentCoaster != coaster)
-                {
-                    _state.CurrentCoaster = coaster;
-                }
-            }
-            else
+            var position = await _locationService.GetCurrentLocationAsync();
+            _state.Capabilities.UseLocation = position != null;
+            if (position == null)
             {
-                if (DateTime.Now - _state.CurrentCoaster?.Updated > new TimeSpan(_state.Settings.TimeThreshold, 0, 0))
-                {
-                    _state.CurrentCoaster = null;
-                }
                 _state.Messages.Add(_messageService.CreateMessage(ApplicationMessageCode.MSG_POSITION_DISABLED, ApplicationMessageType.WARNING));
             }
+
         }
 
         public void OnDeviceDisplayChanged(object sender, DisplayInfoChangedEventArgs e)
